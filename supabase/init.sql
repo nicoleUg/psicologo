@@ -68,7 +68,7 @@ for delete to authenticated
 using (true);
 
 insert into public.patients (full_name, phone)
-select 'Paciente de prueba', '+34 600 000 000'
+select 'Paciente de prueba Bolivia', '+591 7000 0000'
 where not exists (
-  select 1 from public.patients where full_name = 'Paciente de prueba'
+  select 1 from public.patients where full_name = 'Paciente de prueba Bolivia'
 );

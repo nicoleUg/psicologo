@@ -23,9 +23,9 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Mock data
 const initialPatients: Patient[] = [
-  { id: '1', fullName: 'María García López', phone: '+34 612 345 678' },
-  { id: '2', fullName: 'Juan Pérez Martínez', phone: '+34 623 456 789' },
-  { id: '3', fullName: 'Ana Rodríguez Silva', phone: '+34 634 567 890' },
+  { id: '1', fullName: 'Maria Quispe Mamani', phone: '+591 7123 4567' },
+  { id: '2', fullName: 'Juan Choque Flores', phone: '+591 7214 5678' },
+  { id: '3', fullName: 'Ana Rojas Condori', phone: '+591 7345 6789' },
 ];
 
 const initialAppointments: Appointment[] = [

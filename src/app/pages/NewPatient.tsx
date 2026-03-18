@@ -69,7 +69,7 @@ export function NewPatient() {
                   <Input
                     id="fullName"
                     type="text"
-                    placeholder="Ej: María García López"
+                    placeholder="Ej: Maria Quispe Mamani"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="pl-10"
@@ -87,7 +87,7 @@ export function NewPatient() {
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="Ej: +34 612 345 678"
+                    placeholder="Ej: +591 7123 4567"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="pl-10"
