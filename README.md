@@ -2,7 +2,7 @@
 
 # Sistema de Reservas para Psicologo
 
-Sistema web para gestion de citas de consultorio psicologico (MVP Fase 1) construido con React + TypeScript.
+Sistema web para gestion de citas de consultorio psicologico  construido con React + TypeScript.
 
 ## Descripcion
 
