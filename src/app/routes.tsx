@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import { Login } from './pages/Login';
 import { Calendar } from './pages/Calendar';
 import { NewAppointment } from './pages/NewAppointment';
+import { EditAppointment } from './pages/EditAppointment';
 import { AppointmentDetail } from './pages/AppointmentDetail';
 import { Patients } from './pages/Patients';
 import { NewPatient } from './pages/NewPatient';
@@ -25,6 +26,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <NewAppointment />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/appointments/:id/edit',
+    element: (
+      <ProtectedRoute>
+        <EditAppointment />
       </ProtectedRoute>
     ),
   },

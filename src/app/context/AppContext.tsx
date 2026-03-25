@@ -12,6 +12,7 @@ interface AppContextType {
   isSupabaseConnected: boolean;
   addPatient: (patient: Omit<Patient, 'id'>) => Promise<Patient | null>;
   addAppointment: (appointment: Omit<Appointment, 'id'>) => Promise<boolean>;
+  updateAppointment: (id: string, appointment: Omit<Appointment, 'id'>) => Promise<boolean>;
   deleteAppointment: (id: string) => Promise<boolean>;
   getPatient: (id: string) => Patient | undefined;
   checkTimeConflict: (date: string, startTime: string, endTime: string, excludeId?: string) => boolean;
@@ -240,6 +241,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return true;
   };
 
+  const updateAppointment = async (
+    id: string,
+    appointmentData: Omit<Appointment, 'id'>
+  ): Promise<boolean> => {
+    const hasConflict = checkTimeConflict(
+      appointmentData.date,
+      appointmentData.startTime,
+      appointmentData.endTime,
+      id
+    );
+
+    if (hasConflict) {
+      return false;
+    }
+
+    if (!isSupabaseConfigured || !supabase) {
+      setAppointments((prev) =>
+        prev.map((apt) => 
+          apt.id === id ? { id, ...appointmentData } : apt
+        )
+      );
+      return true;
+    }
+
+    const { error } = await supabase
+      .from('appointments')
+      .update({
+        patient_id: appointmentData.patientId,
+        date: appointmentData.date,
+        start_time: appointmentData.startTime,
+        end_time: appointmentData.endTime,
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error actualizando cita en Supabase:', error.message);
+      return false;
+    }
+
+    setAppointments((prev) =>
+      prev.map((apt) => 
+        apt.id === id ? { id, ...appointmentData } : apt
+      )
+    );
+    return true;
+  };
+
   const deleteAppointment = async (id: string): Promise<boolean> => {
     if (!isSupabaseConfigured || !supabase) {
       setAppointments((prev) => prev.filter((apt) => apt.id !== id));
@@ -333,6 +381,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isSupabaseConnected: isSupabaseConfigured,
         addPatient,
         addAppointment,
+        updateAppointment,
         deleteAppointment,
         getPatient,
         checkTimeConflict,

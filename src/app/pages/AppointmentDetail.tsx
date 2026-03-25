@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../components/ui/alert-dialog';
-import { ArrowLeft, Calendar, Clock, Phone, Trash2, User } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Edit, Phone, Trash2, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -135,10 +135,10 @@ export function AppointmentDetail() {
           </Card>
 
           {/* Actions */}
-          <div>
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="w-full sm:w-auto">
+                <Button variant="destructive" className="w-full sm:flex-1">
                   <Trash2 className="w-4 h-4 mr-2" />
                   Cancelar Cita
                 </Button>
@@ -163,6 +163,13 @@ export function AppointmentDetail() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+            <Button 
+              onClick={() => navigate(`/appointments/${appointment.id}/edit`)}
+              className="w-full sm:flex-1"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Reprogramar Cita
+            </Button>
           </div>
         </div>
       </main>

@@ -9,7 +9,7 @@ Sistema web para gestion de citas de consultorio psicologico (MVP Fase 1) constr
 Este proyecto permite gestionar pacientes y citas para un consultorio psicologico.
 La aplicacion funciona como SPA (sin recargas de pagina) y es responsive para movil, tablet y desktop.
 
-## Funcionalidades implementadas (MVP Fase 1)
+## Funcionalidades implementadas 
 
 - Login con correo y contrasena
 - Proteccion de rutas
@@ -18,6 +18,8 @@ La aplicacion funciona como SPA (sin recargas de pagina) y es responsive para mo
 - Validacion de horario laboral (08:00 - 18:00)
 - Calendario semanal (desktop) y vista diaria/lista (movil)
 - Detalle y cancelacion de citas
+- Reprogramacion directa de citas (editar sin eliminar)
+- Busqueda avanzada de pacientes (filtros por nombre/telefono)
 - Notificaciones visuales con toast
 
 ## Requisitos
@@ -62,7 +64,8 @@ npm run dev
 - `/calendar` -> Calendario principal
 - `/appointments/new` -> Nueva cita
 - `/appointments/:id` -> Detalle de cita
-- `/patients` -> Directorio de pacientes
+- `/appointments/:id/edit` -> Editar/reprogramar cita
+- `/patients` -> Directorio de pacientes (con busqueda avanzada)
 - `/patients/new` -> Nuevo paciente
 
 ## Datos de demostracion (modo local)
