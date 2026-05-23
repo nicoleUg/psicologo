@@ -40,6 +40,7 @@ export function EditAppointment() {
   return <EditAppointmentForm appointment={appointment} />;
 }
 
+// eslint-disable-next-line max-lines-per-function
 function EditAppointmentForm({ appointment }: { appointment: Appointment }) {
   const navigate = useNavigate();
   const { patients, updateAppointment, workingHours, hasTimeConflict } = useApp();

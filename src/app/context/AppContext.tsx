@@ -90,12 +90,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setIsAuthenticated(isAllowedUser);
 
       if (session && !isAllowedUser) {
-        void supabase.auth.signOut();
+        void supabase!.auth.signOut();
       }
     };
 
     const initAuth = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error } = await supabase!.auth.getSession();
 
       if (error) {
         console.error('Error validando sesión de Supabase:', error.message);
@@ -109,7 +109,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase!.auth.onAuthStateChange((_event, session) => {
       syncSession(session);
       setIsAuthLoading(false);
     });
@@ -132,11 +132,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const loadInitialData = async () => {
       const [patientsResponse, appointmentsResponse] = await Promise.all([
-        supabase
+        supabase!
           .from('patients')
           .select('id, full_name, phone')
           .order('full_name', { ascending: true }),
-        supabase
+        supabase!
           .from('appointments')
           .select('id, patient_id, date, start_time, end_time')
           .order('date', { ascending: true })
@@ -177,7 +177,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return newPatient;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('patients')
       .insert({
         full_name: normalizedData.fullName,
@@ -218,7 +218,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('appointments')
       .insert({
         patient_id: appointmentData.patientId,
@@ -263,7 +263,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    const { error } = await supabase
+    const { error } = await supabase!
       .from('appointments')
       .update({
         patient_id: appointmentData.patientId,
@@ -292,7 +292,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    const { error } = await supabase.from('appointments').delete().eq('id', id);
+    const { error } = await supabase!.from('appointments').delete().eq('id', id);
 
     if (error) {
       console.error('Error eliminando cita en Supabase:', error.message);
@@ -339,7 +339,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return false;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase!.auth.signInWithPassword({
       email: normalizedEmail,
       password,
     });
@@ -352,7 +352,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const sessionEmail = data.user?.email?.trim().toLowerCase();
 
     if (sessionEmail !== ALLOWED_PSYCHOLOGIST_EMAIL) {
-      await supabase.auth.signOut();
+      await supabase!.auth.signOut();
       return false;
     }
 
@@ -364,9 +364,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(false);
 
     if (isSupabaseConfigured && supabase) {
-      void supabase.auth.signOut();
+      void supabase!.auth.signOut();
     }
   };
+
 
   return (
     <AppContext.Provider
