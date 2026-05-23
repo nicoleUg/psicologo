@@ -15,54 +15,13 @@ import {
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { generateTimeSlots } from '../lib/timeUtils';
 
-function timeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-}
-
-function generateTimeSlots(startTime: string, endTime: string): string[] {
-  const slots: string[] = [];
-  let current = timeToMinutes(startTime);
-  const end = timeToMinutes(endTime);
-
-  while (current < end) {
-    const hours = Math.floor(current / 60);
-    const minutes = current % 60;
-    slots.push(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
-    current += 60; // 1 hour slots
-  }
-
-  return slots;
-}
-
-function formatTimeForInput(date: Date): string {
-  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-}
-
-function getValidTime(time: string | null, timeSlots: string[], fallback: string): string {
-  if (!time || !timeSlots.includes(time)) {
-    return fallback;
-  }
-  return time;
-}
-
-function getValidEndTime(
-  endTime: string | null,
-  startTime: string,
-  timeSlots: string[]
-): string {
-  if (!endTime) {
-    const startIdx = timeSlots.indexOf(startTime);
-    return startIdx < timeSlots.length - 1 ? timeSlots[startIdx + 1] : timeSlots[timeSlots.length - 1];
-  }
-  return getValidTime(endTime, timeSlots, timeSlots[timeSlots.length - 1]);
-}
 
 export function EditAppointment() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { appointments, patients, updateAppointment, workingHours, checkTimeConflict } = useApp();
+  const { appointments, patients, updateAppointment, workingHours, hasTimeConflict } = useApp();
 
   const appointment = appointments.find((apt) => apt.id === id);
 
@@ -104,7 +63,7 @@ export function EditAppointment() {
     }
 
     // Check for conflicts (excluding this appointment)
-    if (checkTimeConflict(date, startTime, endTime, appointment.id)) {
+    if (hasTimeConflict(date, startTime, endTime, appointment.id)) {
       toast.error('Conflicto horario: existe otra cita en este horario');
       return;
     }

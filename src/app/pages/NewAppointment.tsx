@@ -15,6 +15,7 @@ import {
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { generateTimeSlots, getValidTime, getValidEndTime } from '../lib/timeUtils';
 
 export function NewAppointment() {
   const navigate = useNavigate();
@@ -222,46 +223,3 @@ export function NewAppointment() {
   );
 }
 
-function generateTimeSlots(start: string, end: string): string[] {
-  const slots: string[] = [];
-  const [startHour] = start.split(':').map(Number);
-  const [endHour] = end.split(':').map(Number);
-
-  for (let hour = startHour; hour <= endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      const time = `${hour.toString().padStart(2, '0')}:${minute
-        .toString()
-        .padStart(2, '0')}`;
-      if (time <= end) {
-        slots.push(time);
-      }
-    }
-  }
-
-  return slots;
-}
-
-function getValidTime(candidate: string | null, timeSlots: string[], preferred: string): string {
-  if (candidate && timeSlots.includes(candidate)) {
-    return candidate;
-  }
-
-  if (timeSlots.includes(preferred)) {
-    return preferred;
-  }
-
-  return timeSlots[0] ?? preferred;
-}
-
-function getValidEndTime(candidate: string | null, startTime: string, timeSlots: string[]): string {
-  if (candidate && timeSlots.includes(candidate) && candidate > startTime) {
-    return candidate;
-  }
-
-  const startIndex = timeSlots.indexOf(startTime);
-  if (startIndex >= 0 && startIndex < timeSlots.length - 1) {
-    return timeSlots[startIndex + 1];
-  }
-
-  return timeSlots[timeSlots.length - 1] ?? startTime;
-}

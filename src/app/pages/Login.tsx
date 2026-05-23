@@ -7,6 +7,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Calendar, Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+import { ALLOWED_PSYCHOLOGIST_EMAIL } from '../lib/constants';
 
 export function Login() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export function Login() {
         toast.success('Inicio de sesión exitoso');
         navigate('/calendar');
       } else {
-        toast.error('Credenciales inválidas. Solo se permite psicologoLoquero@gmail.com');
+        toast.error(`Credenciales inválidas. Solo se permite ${ALLOWED_PSYCHOLOGIST_EMAIL}`);
       }
     } finally {
       setIsLoading(false);

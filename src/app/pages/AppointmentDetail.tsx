@@ -17,6 +17,7 @@ import { ArrowLeft, Calendar, Clock, Edit, Phone, Trash2, User } from 'lucide-re
 import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { calculateDuration } from '../lib/timeUtils';
 
 export function AppointmentDetail() {
   const navigate = useNavigate();
@@ -175,10 +176,4 @@ export function AppointmentDetail() {
       </main>
     </div>
   );
-}
-
-function calculateDuration(startTime: string, endTime: string): number {
-  const [startHour, startMinute] = startTime.split(':').map(Number);
-  const [endHour, endMinute] = endTime.split(':').map(Number);
-  return (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
 }
