@@ -70,8 +70,9 @@ export function getValidEndTime(
   startTime: string,
   timeSlots: string[]
 ): string {
-  if (candidate && timeSlots.includes(candidate) && candidate > startTime) {
-    return candidate;
+  const isCandidateValid = candidate && timeSlots.includes(candidate) && candidate > startTime;
+  if (isCandidateValid) {
+    return candidate as string;
   }
 
   const startIndex = timeSlots.indexOf(startTime);

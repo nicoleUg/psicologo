@@ -9,6 +9,30 @@ import { Calendar, Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_PSYCHOLOGIST_EMAIL } from '../lib/constants';
 
+function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: any) {
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email">Correo electrónico</Label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input id="email" type="email" placeholder="psicologoLoquero@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">Contraseña</Label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10" required />
+        </div>
+      </div>
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? 'Ingresando...' : 'Iniciar Sesión'}
+      </Button>
+    </form>
+  );
+}
+
 export function Login() {
   const navigate = useNavigate();
   const { login, isSupabaseConnected } = useApp();
@@ -52,41 +76,7 @@ export function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Correo electrónico</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="psicologoLoquero@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
-                  required
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10"
-                  required
-                />
-              </div>
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Ingresando...' : 'Iniciar Sesión'}
-            </Button>
-          </form>
+          <LoginForm email={email} setEmail={setEmail} password={password} setPassword={setPassword} isLoading={isLoading} handleSubmit={handleSubmit} />
         </CardContent>
       </Card>
     </div>

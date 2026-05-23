@@ -14,14 +14,13 @@ import {
 } from '../components/ui/select';
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
 import { generateTimeSlots } from '../lib/timeUtils';
-
+import { Appointment } from '../types';
 
 export function EditAppointment() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { appointments, patients, updateAppointment, workingHours, hasTimeConflict } = useApp();
+  const { appointments } = useApp();
 
   const appointment = appointments.find((apt) => apt.id === id);
 
@@ -38,6 +37,12 @@ export function EditAppointment() {
     );
   }
 
+  return <EditAppointmentForm appointment={appointment} />;
+}
+
+function EditAppointmentForm({ appointment }: { appointment: Appointment }) {
+  const navigate = useNavigate();
+  const { patients, updateAppointment, workingHours, hasTimeConflict } = useApp();
   const timeSlots = generateTimeSlots(workingHours.start, workingHours.end);
 
   const [patientId, setPatientId] = useState(appointment.patientId);
@@ -48,40 +53,25 @@ export function EditAppointment() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate working hours
     if (startTime < workingHours.start || endTime > workingHours.end) {
-      toast.error(
-        `La cita debe estar dentro del horario laboral (${workingHours.start} - ${workingHours.end})`
-      );
+      toast.error(`La cita debe estar dentro del horario laboral (${workingHours.start} - ${workingHours.end})`);
       return;
     }
-
-    // Validate time range
     if (startTime >= endTime) {
       toast.error('La hora de inicio debe ser anterior a la hora de fin');
       return;
     }
-
-    // Check for conflicts (excluding this appointment)
     if (hasTimeConflict(date, startTime, endTime, appointment.id)) {
       toast.error('Conflicto horario: existe otra cita en este horario');
       return;
     }
 
-    const success = await updateAppointment(appointment.id, {
-      patientId,
-      date,
-      startTime,
-      endTime,
-    });
-
+    const success = await updateAppointment(appointment.id, { patientId, date, startTime, endTime });
     if (success) {
       toast.success('Cita reprogramada correctamente');
       navigate('/calendar');
     } else {
-      toast.error(
-        'No se pudo actualizar la cita. Revise la configuración de Supabase (tabla public.appointments).'
-      );
+      toast.error('No se pudo actualizar la cita. Revise la configuración de Supabase.');
     }
   };
 

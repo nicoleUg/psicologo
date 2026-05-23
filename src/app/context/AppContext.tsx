@@ -83,10 +83,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const syncSession = (session: Session | null) => {
-      const sessionEmail = session?.user?.email?.trim().toLowerCase();
-      const isAllowedUser = Boolean(
-        sessionEmail && sessionEmail === ALLOWED_PSYCHOLOGIST_EMAIL
-      );
+      const email = session ? session.user.email : null;
+      const sessionEmail = email ? email.trim().toLowerCase() : null;
+      const isAllowedUser = sessionEmail === ALLOWED_PSYCHOLOGIST_EMAIL;
 
       setIsAuthenticated(isAllowedUser);
 
