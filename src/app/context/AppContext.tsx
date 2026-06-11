@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import type { Session } from '@supabase/supabase-js';
 import { Patient, Appointment, WorkingHours } from '../types';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
-import { ALLOWED_PSYCHOLOGIST_EMAIL, DEFAULT_WORKING_HOURS } from '../lib/constants';
+import { DEFAULT_WORKING_HOURS } from '../lib/constants';
 import { timeToMinutes } from '../lib/timeUtils';
 
 interface AppContextType {
@@ -83,15 +83,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const syncSession = (session: Session | null) => {
-      const email = session ? session.user.email : null;
-      const sessionEmail = email ? email.trim().toLowerCase() : null;
-      const isAllowedUser = sessionEmail === ALLOWED_PSYCHOLOGIST_EMAIL;
-
-      setIsAuthenticated(isAllowedUser);
-
-      if (session && !isAllowedUser) {
-        void supabase!.auth.signOut();
-      }
+      setIsAuthenticated(Boolean(session));
     };
 
     const initAuth = async () => {
@@ -335,10 +327,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    if (normalizedEmail !== ALLOWED_PSYCHOLOGIST_EMAIL) {
-      return false;
-    }
-
     const { data, error } = await supabase!.auth.signInWithPassword({
       email: normalizedEmail,
       password,
@@ -346,13 +334,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     if (error || !data.session) {
       console.error('Error de login en Supabase:', error?.message);
-      return false;
-    }
-
-    const sessionEmail = data.user?.email?.trim().toLowerCase();
-
-    if (sessionEmail !== ALLOWED_PSYCHOLOGIST_EMAIL) {
-      await supabase!.auth.signOut();
       return false;
     }
 

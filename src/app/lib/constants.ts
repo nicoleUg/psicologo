@@ -1,6 +1,5 @@
 import type { WorkingHours } from '../types';
 
-export const ALLOWED_PSYCHOLOGIST_EMAIL = 'psicologoloquero@gmail.com';
 
 export const MINUTES_IN_HOUR = 60;
 

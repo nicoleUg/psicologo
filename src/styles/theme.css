@@ -192,3 +192,9 @@
     line-height: 1.5;
   }
 }
+
+[data-sonner-toast][data-swiped=true] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+

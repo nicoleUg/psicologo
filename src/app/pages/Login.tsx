@@ -7,7 +7,6 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Calendar, Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
-import { ALLOWED_PSYCHOLOGIST_EMAIL } from '../lib/constants';
 
 function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: any) {
   return (
@@ -56,7 +55,7 @@ export function Login() {
         toast.success('Inicio de sesión exitoso');
         navigate('/calendar');
       } else {
-        toast.error(`Credenciales inválidas. Solo se permite ${ALLOWED_PSYCHOLOGIST_EMAIL}`);
+        toast.error('Credenciales inválidas. Verifica tu correo y contraseña.');
       }
     } finally {
       setIsLoading(false);
