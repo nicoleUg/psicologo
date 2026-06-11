@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import type { Session } from '@supabase/supabase-js';
 import { Patient, Appointment, WorkingHours } from '../types';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
+import { ALLOWED_PSYCHOLOGIST_EMAIL, DEFAULT_WORKING_HOURS } from '../lib/constants';
+import { timeToMinutes } from '../lib/timeUtils';
 
 interface AppContextType {
   patients: Patient[];
@@ -15,12 +17,12 @@ interface AppContextType {
   updateAppointment: (id: string, appointment: Omit<Appointment, 'id'>) => Promise<boolean>;
   deleteAppointment: (id: string) => Promise<boolean>;
   getPatient: (id: string) => Patient | undefined;
-  checkTimeConflict: (date: string, startTime: string, endTime: string, excludeId?: string) => boolean;
+  hasTimeConflict: (date: string, startTime: string, endTime: string, excludeId?: string) => boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Mock data
 const initialPatients: Patient[] = [
@@ -67,15 +69,12 @@ interface AppointmentRow {
   end_time: string;
 }
 
-const defaultWorkingHours: WorkingHours = { start: '08:00', end: '18:00' };
-const ALLOWED_PSYCHOLOGIST_EMAIL = 'psicologoloquero@gmail.com';
-
 export function AppProvider({ children }: { children: ReactNode }) {
   const [patients, setPatients] = useState<Patient[]>(initialPatients);
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(isSupabaseConfigured);
-  const [workingHours] = useState<WorkingHours>(defaultWorkingHours);
+  const [workingHours] = useState<WorkingHours>(DEFAULT_WORKING_HOURS);
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
@@ -84,20 +83,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const syncSession = (session: Session | null) => {
-      const sessionEmail = session?.user?.email?.trim().toLowerCase();
-      const isAllowedUser = Boolean(
-        sessionEmail && sessionEmail === ALLOWED_PSYCHOLOGIST_EMAIL
-      );
+      const email = session ? session.user.email : null;
+      const sessionEmail = email ? email.trim().toLowerCase() : null;
+      const isAllowedUser = sessionEmail === ALLOWED_PSYCHOLOGIST_EMAIL;
 
       setIsAuthenticated(isAllowedUser);
 
       if (session && !isAllowedUser) {
-        void supabase.auth.signOut();
+        void supabase!.auth.signOut();
       }
     };
 
     const initAuth = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error } = await supabase!.auth.getSession();
 
       if (error) {
         console.error('Error validando sesión de Supabase:', error.message);
@@ -111,7 +109,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase!.auth.onAuthStateChange((_event, session) => {
       syncSession(session);
       setIsAuthLoading(false);
     });
@@ -134,11 +132,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const loadInitialData = async () => {
       const [patientsResponse, appointmentsResponse] = await Promise.all([
-        supabase
+        supabase!
           .from('patients')
           .select('id, full_name, phone')
           .order('full_name', { ascending: true }),
-        supabase
+        supabase!
           .from('appointments')
           .select('id, patient_id, date, start_time, end_time')
           .order('date', { ascending: true })
@@ -179,7 +177,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return newPatient;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('patients')
       .insert({
         full_name: normalizedData.fullName,
@@ -201,7 +199,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const addAppointment = async (
     appointmentData: Omit<Appointment, 'id'>
   ): Promise<boolean> => {
-    const hasConflict = checkTimeConflict(
+    const hasConflict = hasTimeConflict(
       appointmentData.date,
       appointmentData.startTime,
       appointmentData.endTime
@@ -220,7 +218,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!
       .from('appointments')
       .insert({
         patient_id: appointmentData.patientId,
@@ -245,7 +243,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     id: string,
     appointmentData: Omit<Appointment, 'id'>
   ): Promise<boolean> => {
-    const hasConflict = checkTimeConflict(
+    const hasConflict = hasTimeConflict(
       appointmentData.date,
       appointmentData.startTime,
       appointmentData.endTime,
@@ -265,7 +263,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    const { error } = await supabase
+    const { error } = await supabase!
       .from('appointments')
       .update({
         patient_id: appointmentData.patientId,
@@ -294,7 +292,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    const { error } = await supabase.from('appointments').delete().eq('id', id);
+    const { error } = await supabase!.from('appointments').delete().eq('id', id);
 
     if (error) {
       console.error('Error eliminando cita en Supabase:', error.message);
@@ -309,7 +307,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return patients.find((p) => p.id === id);
   };
 
-  const checkTimeConflict = (
+  const hasTimeConflict = (
     date: string,
     startTime: string,
     endTime: string,
@@ -341,7 +339,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return false;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase!.auth.signInWithPassword({
       email: normalizedEmail,
       password,
     });
@@ -354,7 +352,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const sessionEmail = data.user?.email?.trim().toLowerCase();
 
     if (sessionEmail !== ALLOWED_PSYCHOLOGIST_EMAIL) {
-      await supabase.auth.signOut();
+      await supabase!.auth.signOut();
       return false;
     }
 
@@ -366,9 +364,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(false);
 
     if (isSupabaseConfigured && supabase) {
-      void supabase.auth.signOut();
+      void supabase!.auth.signOut();
     }
   };
+
 
   return (
     <AppContext.Provider
@@ -384,7 +383,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         updateAppointment,
         deleteAppointment,
         getPatient,
-        checkTimeConflict,
+        hasTimeConflict,
         login,
         logout,
       }}
@@ -400,12 +399,6 @@ export function useApp() {
     throw new Error('useApp must be used within an AppProvider');
   }
   return context;
-}
-
-// Helper function
-function timeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
 }
 
 function mapPatientRow(row: PatientRow): Patient {

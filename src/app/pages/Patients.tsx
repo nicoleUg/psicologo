@@ -3,8 +3,66 @@ import { useNavigate } from 'react-router';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { ArrowLeft, Calendar, Phone, Plus, Search, User, X } from 'lucide-react';
+
+// Hook to hold the filtering logic and reduce complexity
+function useFilteredPatients(patients: any[], searchQuery: string, filterType: 'all' | 'name' | 'phone') {
+  return patients.filter((patient) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase().trim();
+    if (filterType === 'name') return patient.fullName.toLowerCase().includes(query);
+    if (filterType === 'phone') return patient.phone.includes(query);
+    return patient.fullName.toLowerCase().includes(query) || patient.phone.includes(query);
+  }).sort((a, b) => a.fullName.localeCompare(b.fullName));
+}
+
+function getFilterPlaceholder(filterType: string): string {
+  if (filterType === 'all') return 'Buscar por nombre o teléfono...';
+  if (filterType === 'name') return 'Buscar por nombre...';
+  return 'Buscar por teléfono...';
+}
+
+function PatientCard({ patient, appointmentCount, navigate }: { patient: any, appointmentCount: number, navigate: any }) {
+  return (
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <User className="w-5 h-5 text-indigo-600" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-medium truncate">{patient.fullName}</p>
+              <div className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
+                <a
+                  href={`tel:${patient.phone}`}
+                  className="hover:text-indigo-600 flex items-center gap-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Phone className="w-3 h-3 flex-shrink-0" />
+                  <span className="truncate">{patient.phone}</span>
+                </a>
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3 flex-shrink-0" />
+                  {appointmentCount} cita{appointmentCount !== 1 ? 's' : ''}
+                </span>
+              </div>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/appointments/new', { state: { patientId: patient.id } })}
+            className="flex-shrink-0"
+          >
+            Agendar
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function Patients() {
   const navigate = useNavigate();
@@ -16,23 +74,7 @@ export function Patients() {
     return appointments.filter((apt) => apt.patientId === patientId).length;
   };
 
-  const filteredPatients = patients.filter((patient) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase().trim();
-
-    switch (filterType) {
-      case 'name':
-        return patient.fullName.toLowerCase().includes(query);
-      case 'phone':
-        return patient.phone.includes(query);
-      case 'all':
-      default:
-        return (
-          patient.fullName.toLowerCase().includes(query) ||
-          patient.phone.includes(query)
-        );
-    }
-  }).sort((a, b) => a.fullName.localeCompare(b.fullName));
+  const filteredPatients = useFilteredPatients(patients, searchQuery, filterType);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -76,13 +118,7 @@ export function Patients() {
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
               type="text"
-              placeholder={
-                filterType === 'all'
-                  ? 'Buscar por nombre o teléfono...'
-                  : filterType === 'name'
-                    ? 'Buscar por nombre...'
-                    : 'Buscar por teléfono...'
-              }
+              placeholder={getFilterPlaceholder(filterType)}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-10"
@@ -118,49 +154,14 @@ export function Patients() {
               {filteredPatients.length} paciente{filteredPatients.length !== 1 ? 's' : ''}{' '}
               {searchQuery && 'encontrado(s)'}
             </p>
-            {filteredPatients.map((patient) => {
-              const appointmentCount = getPatientAppointmentCount(patient.id);
-              return (
-                <Card key={patient.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <User className="w-5 h-5 text-indigo-600" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium truncate">{patient.fullName}</p>
-                          <div className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
-                            <a
-                              href={`tel:${patient.phone}`}
-                              className="hover:text-indigo-600 flex items-center gap-1"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Phone className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate">{patient.phone}</span>
-                            </a>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3 flex-shrink-0" />
-                              {appointmentCount} cita{appointmentCount !== 1 ? 's' : ''}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          navigate('/appointments/new', { state: { patientId: patient.id } })
-                        }
-                        className="flex-shrink-0"
-                      >
-                        Agendar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {filteredPatients.map((patient) => (
+              <PatientCard
+                key={patient.id}
+                patient={patient}
+                appointmentCount={getPatientAppointmentCount(patient.id)}
+                navigate={navigate}
+              />
+            ))}
           </div>
         )}
       </main>

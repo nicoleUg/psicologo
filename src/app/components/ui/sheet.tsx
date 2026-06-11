@@ -44,6 +44,7 @@ function SheetOverlay({
   );
 }
 
+// eslint-disable-next-line complexity
 function SheetContent({
   className,
   children,

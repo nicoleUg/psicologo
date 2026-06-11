@@ -15,6 +15,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { type DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import type { EventClickArg, EventContentArg } from '@fullcalendar/core';
+import { timeToMinutes, minutesToTime } from '../lib/timeUtils';
 
 export function Calendar() {
   const navigate = useNavigate();
@@ -207,15 +208,3 @@ function getSuggestedEndTime(startTime: string, workingEnd: string): string | nu
   return minutesToTime(suggestedEndMinutes);
 }
 
-function timeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-}
-
-function minutesToTime(totalMinutes: number): string {
-  const hours = Math.floor(totalMinutes / 60)
-    .toString()
-    .padStart(2, '0');
-  const minutes = (totalMinutes % 60).toString().padStart(2, '0');
-  return `${hours}:${minutes}`;
-}

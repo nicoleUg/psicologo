@@ -42,6 +42,7 @@ function useCarousel() {
   return context;
 }
 
+// eslint-disable-next-line max-lines-per-function, complexity
 function Carousel({
   orientation = "horizontal",
   opts,

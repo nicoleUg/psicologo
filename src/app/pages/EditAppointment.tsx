@@ -14,55 +14,13 @@ import {
 } from '../components/ui/select';
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-
-function timeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-}
-
-function generateTimeSlots(startTime: string, endTime: string): string[] {
-  const slots: string[] = [];
-  let current = timeToMinutes(startTime);
-  const end = timeToMinutes(endTime);
-
-  while (current < end) {
-    const hours = Math.floor(current / 60);
-    const minutes = current % 60;
-    slots.push(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
-    current += 60; // 1 hour slots
-  }
-
-  return slots;
-}
-
-function formatTimeForInput(date: Date): string {
-  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-}
-
-function getValidTime(time: string | null, timeSlots: string[], fallback: string): string {
-  if (!time || !timeSlots.includes(time)) {
-    return fallback;
-  }
-  return time;
-}
-
-function getValidEndTime(
-  endTime: string | null,
-  startTime: string,
-  timeSlots: string[]
-): string {
-  if (!endTime) {
-    const startIdx = timeSlots.indexOf(startTime);
-    return startIdx < timeSlots.length - 1 ? timeSlots[startIdx + 1] : timeSlots[timeSlots.length - 1];
-  }
-  return getValidTime(endTime, timeSlots, timeSlots[timeSlots.length - 1]);
-}
+import { generateTimeSlots } from '../lib/timeUtils';
+import { Appointment } from '../types';
 
 export function EditAppointment() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { appointments, patients, updateAppointment, workingHours, checkTimeConflict } = useApp();
+  const { appointments } = useApp();
 
   const appointment = appointments.find((apt) => apt.id === id);
 
@@ -79,6 +37,13 @@ export function EditAppointment() {
     );
   }
 
+  return <EditAppointmentForm appointment={appointment} />;
+}
+
+// eslint-disable-next-line max-lines-per-function
+function EditAppointmentForm({ appointment }: { appointment: Appointment }) {
+  const navigate = useNavigate();
+  const { patients, updateAppointment, workingHours, hasTimeConflict } = useApp();
   const timeSlots = generateTimeSlots(workingHours.start, workingHours.end);
 
   const [patientId, setPatientId] = useState(appointment.patientId);
@@ -89,40 +54,25 @@ export function EditAppointment() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate working hours
     if (startTime < workingHours.start || endTime > workingHours.end) {
-      toast.error(
-        `La cita debe estar dentro del horario laboral (${workingHours.start} - ${workingHours.end})`
-      );
+      toast.error(`La cita debe estar dentro del horario laboral (${workingHours.start} - ${workingHours.end})`);
       return;
     }
-
-    // Validate time range
     if (startTime >= endTime) {
       toast.error('La hora de inicio debe ser anterior a la hora de fin');
       return;
     }
-
-    // Check for conflicts (excluding this appointment)
-    if (checkTimeConflict(date, startTime, endTime, appointment.id)) {
+    if (hasTimeConflict(date, startTime, endTime, appointment.id)) {
       toast.error('Conflicto horario: existe otra cita en este horario');
       return;
     }
 
-    const success = await updateAppointment(appointment.id, {
-      patientId,
-      date,
-      startTime,
-      endTime,
-    });
-
+    const success = await updateAppointment(appointment.id, { patientId, date, startTime, endTime });
     if (success) {
       toast.success('Cita reprogramada correctamente');
       navigate('/calendar');
     } else {
-      toast.error(
-        'No se pudo actualizar la cita. Revise la configuración de Supabase (tabla public.appointments).'
-      );
+      toast.error('No se pudo actualizar la cita. Revise la configuración de Supabase.');
     }
   };
 

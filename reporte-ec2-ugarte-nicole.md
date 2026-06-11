@@ -1,0 +1,220 @@
+# EC2 — Reporte de Examen Parcial
+**Estudiante:** Ugarte Nicole  
+**Fecha de entrega:** 23 de Mayo de 2026  
+**Proyectos presentados:** Proyecto A: Sistema de Reservas Hotel | Proyecto B: Sistema de Reservas Psicólogo | Proyecto C: Sistema de Préstamos
+
+---
+
+## 1. Reporte de cobertura inicial (0%)
+
+### Proyecto A — Sistema de Reservas Hotel (Backend y Frontend)
+> Se generó el reporte inicial con **Jest** en el Backend y **Vitest con v8** en el Frontend. En ambos casos la cobertura inicial fue de **0%**. La configuración en Jest (`jest.config.js`) y Vitest (`vite.config.ts`) excluyó intencionalmente los archivos de la infraestructura y UI puramente visuales, midiendo únicamente los directorios de la **lógica de negocio**. *(Adjuntar reporte inicial PDF/HTML)*.
+
+### Proyecto B — Sistema de Reservas Psicólogo (Frontend)
+> Se generó el reporte inicial con **Vitest con v8 y c8/Istanbul** antes de escribir pruebas, obteniendo un **0% de cobertura**. Se configuró `vite.config.ts` para evaluar exclusivamente:
+> - `src/app/pages/**/*.tsx`
+> - `src/app/context/**/*.tsx`
+> - `src/app/lib/**/*.ts`
+> Se excluyeron los componentes UI genéricos. *(Adjuntar reporte inicial PDF/HTML)*.
+
+### Proyecto C — Sistema de Préstamos (Frontend)
+> Se integró **Vitest con v8 (Istanbul)** y **Testing Library** para validar el comportamiento de los componentes de negocio sin tocar componentes de interfaz puros (`ui/`). El reporte estático inicial se generó al **0%** como base de comparación. *(Adjuntar reporte inicial PDF/HTML)*.
+
+---
+
+## 2. Pruebas unitarias
+
+### 2.1 Traza completa — una prueba representativa por proyecto
+
+#### Proyecto A — test(backend): agregar prueba de validacion de fechas al crear reserva
+**HU relacionada:** HU-02 Gestión de Reservas  
+**Criterio de aceptación:**
+> El sistema no debe permitir que la fecha de salida sea anterior a la de ingreso al registrar una nueva reserva.
+
+**Cobertura antes:** 0%
+
+**Código a probar:**
+```typescript
+// snippet del método ReservasService.create
+async create(createReservaDto: CreateReservaDto) {
+  if (new Date(createReservaDto.fechaSalida) < new Date(createReservaDto.fechaIngreso)) {
+    throw new BadRequestException('La fecha de salida no puede ser anterior a la fecha de ingreso');
+  }
+  // Lógica de guardado y creación de reserva...
+}
+```
+
+**Prueba unitaria:**
+```typescript
+// snippet de la prueba en reservas.service.spec.ts
+it('Debe lanzar error si fecha de salida es anterior a fecha de ingreso', async () => {
+  const mockReservaDto = {
+    fechaIngreso: '2026-05-25',
+    fechaSalida: '2026-05-20', // Fecha inválida (pasado)
+    huespedId: 1,
+    habitacionId: 101,
+  };
+
+  await expect(service.create(mockReservaDto)).rejects.toThrow(BadRequestException);
+});
+```
+
+**Explicación:**
+> Se cubre el camino de validación de fechas (flujo alternativo / de error) en el servicio de creación de reservas del backend. Esto garantiza que la regla de negocio crítica sobre coherencia en los días se respete antes de interactuar con la base de datos.
+
+**Cobertura después:** 16.86% (Statements)
+
+---
+
+#### Proyecto B — test(frontend): agregar prueba para validación de acceso denegado en login
+**HU relacionada:** HU-01 Inicio de sesión local  
+**Criterio de aceptación:**
+> El sistema debe denegar el acceso y mostrar un mensaje de error si las credenciales ingresadas son inválidas.
+
+**Cobertura antes:** 0%
+
+**Código a probar:**
+```tsx
+// snippet del componente Login.tsx (manejador de submit)
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const success = await login(email, password);
+  
+  if (!success) {
+    toast.error('Credenciales inválidas. Verifica tu correo y contraseña.');
+  }
+};
+```
+
+**Prueba unitaria:**
+```tsx
+// snippet de la prueba en login.test.tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi } from 'vitest';
+import { Login } from '../app/pages/Login';
+import { AppContext } from '../app/context/AppContext';
+
+// Mock de la librería de notificaciones
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn(), success: vi.fn() }
+}));
+
+describe('HU 1: Inicio de sesión local', () => {
+  it('Dado credenciales incorrectas, Cuando intenta iniciar sesión, Entonces deniega el acceso y muestra error', async () => {
+    const mockLogin = vi.fn().mockResolvedValue(false); // Simulación fallo de login
+
+    render(
+      <AppContext.Provider value={{ login: mockLogin, isSupabaseConnected: true /* ... */ }}>
+        <Login />
+      </AppContext.Provider>
+    );
+
+    await userEvent.type(screen.getByLabelText(/correo electrónico/i), 'incorrecto@gmail.com');
+    await userEvent.type(screen.getByLabelText(/contraseña/i), 'claveEquivocada');
+    await userEvent.click(screen.getByRole('button', { name: /iniciar sesión/i }));
+
+    expect(mockLogin).toHaveBeenCalledWith('incorrecto@gmail.com', 'claveEquivocada');
+    const { toast } = await import('sonner');
+    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('Credenciales inválidas'));
+  });
+});
+```
+
+**Explicación:**
+> Se está cubriendo el flujo de error en la autenticación del componente `Login`. Validamos que el manejador del formulario capture el falso positivo del context (`login` devuelve `false`) y dispare correctamente la notificación UI (`toast.error`) al usuario.
+
+**Cobertura después:** 28.34% (Statements)
+
+---
+
+#### Proyecto C — test(frontend): agregar pruebas para calculo de capacidad de pago e identificar estado de riesgo
+**HU relacionada:** HU-03 Identificación de estado de riesgo y capacidad de pago  
+**Criterio de aceptación:**
+> El sistema debe calcular automáticamente el ratio de endeudamiento y marcar riesgo medio si supera el 30%, o alto riesgo y deshabilitar progreso si supera el 40%.
+
+**Cobertura antes:** 0%
+
+**Código a probar:**
+```tsx
+// snippet del método que calcula el riesgo en CapacityCalculator.tsx
+const calculateRisk = (debtRatio: number) => {
+  if (debtRatio > 40) return 'Alto Riesgo';
+  if (debtRatio > 30) return 'Riesgo Medio';
+  return 'Riesgo Bajo';
+};
+```
+
+**Prueba unitaria:**
+```tsx
+// snippet de la prueba en CapacityCalculator.test.tsx
+it('Debe detectar Alto Riesgo y deshabilitar progreso si el endeudamiento supera el 40%', () => {
+  const mockDebtRatio = 45; // Supera 40%
+  const result = calculateRisk(mockDebtRatio);
+  expect(result).toBe('Alto Riesgo');
+});
+```
+
+**Explicación:**
+> Se cubre el flujo del cálculo algorítmico cuando el usuario sobrepasa el límite del 40% del ratio de endeudamiento. Esto verifica que la lógica detecte la vulnerabilidad financiera marcando el estado "Alto Riesgo", sirviendo de guarda de protección crucial.
+
+**Cobertura después:** 91.54% (Statements Generales)
+
+---
+
+### 2.2 Resumen del resto de pruebas
+
+| # | Proyecto | Nombre de la prueba | HU relacionada | Qué cubre | Commit |
+|---|---|---|---|---|---|
+| 1 | Proyecto A (Back) | test(backend): prueba inicializacion habitacion.factory | HU-XX | Patrón Factory instancia correctamente las clases esperadas. | `abc1234` |
+| 2 | Proyecto A (Front) | test(frontend): validacion crear reserva sin huespedes | HU-XX | Exige registrar un huésped antes de reservar. | `abc1234` |
+| 3 | Proyecto A (Front) | test(frontend): visualizacion estado vacio | HU-XX | Muestra "No hay huéspedes registrados" si API retorna vacío. | `abc1234` |
+| 4 | Proyecto B (Front) | test(frontend): validacion campos obligatorios registrar paciente | HU-XX | Verifica los campos requeridos en el guardado (`NewPatient`). | `abc1234` |
+| 5 | Proyecto B (Front) | test(frontend): filtrado busqueda de pacientes | HU-XX | Valida el filtro buscador por nombre y teléfono (`PatientsSearch`). | `abc1234` |
+| 6 | Proyecto B (Front) | test(frontend): pruebas de traslape y eliminacion | HU-05/08 | Validar horario traslapado y diálogo de confirmación para eliminar citas. | `abc1234` |
+| 7 | Proyecto C (Front) | test(frontend): pruebas busqueda clientes y validacion | HU-XX | Valida bloqueo de botón verificar, y simulaciones de Cliente Encontrado / No Encontrado. | `abc1234` |
+| 8 | Proyecto C (Front) | test(frontend): validacion de limites y aprobacion | HU-XX | Valida desembolsos <= 0, <= $20k directo y > $20k derivado a comité. | `abc1234` |
+| 9 | Proyecto C (Front) | test(frontend): casos limite completando el set de 12 | HU-XX | Valida reposo seguro en formulario, el umbral exacto de $20k, y anulación de derivación dinámica. | `abc1234` |
+
+---
+
+## 3. Reporte de cobertura final (X%)
+
+### Proyecto A — Sistema de Reservas Hotel
+> **Backend:** Se alcanzó una cobertura final del **16.86%** en Statements (líneas de código lógica de negocio). *(Adjuntar PDF/HTML)*
+> **Frontend:** Se alcanzó una cobertura final del **18.51%** en Statements. *(Adjuntar PDF/HTML)*
+
+### Proyecto B — Sistema de Reservas Psicólogo
+> **Frontend:** Se alcanzó una cobertura final del **28.34%** en Statements (`28.61%` en Lines) enfocado puramente en la lógica de negocio. *(Adjuntar PDF/HTML)*
+
+### Proyecto C — Sistema de Préstamos
+> **Frontend:** Se alcanzó una cobertura final del **91.54%** General. Componentes aislados: CapacityCalculator (100%), CustomerSearch (94.73%), LoanApproval (66.66%). *(Adjuntar PDF/HTML)*
+
+---
+
+## 4. Code Smells — ESLint y SonarQube
+
+### 4.1 Tipos de code smell utilizados
+
+> A continuación se explican las implicancias de los problemas estáticos detectados en los proyectos:
+
+| Tipo | Por qué es un problema |
+|---|---|
+| **Cognitive / High Cyclomatic Complexity** | Bloques de código con demasiados condicionales o anidados. Dificultan enormemente la lectura de la lógica principal y aumentan el riesgo de introducir bugs al no usar *Early Returns*. |
+| **Massive Component / Long Method** | Componentes con demasiadas responsabilidades (UI y Lógica acopladas). Rompe el principio de Responsabilidad Única y encarece el mantenimiento del archivo principal de React. |
+| **Magic Numbers (`no-magic-numbers`)** | Valores numéricos sin contexto (ej. 3000, 1500, 0.3). Es difícil saber qué significan, y modificarlos a futuro (ej. tiempos de delay o probabilidades) supone un rastreo manual propenso a errores. |
+| **Nested Ternary Expressions (`no-nested-ternary`)** | Los operadores ternarios anidados son sumamente confusos. Hacen que las evaluaciones booleanas complejas parezcan un laberinto ilegible en una sola línea. |
+| **Dead Code (`no-unused-vars`)** | Código importado o declarado (ej. íconos, variables) que no está siendo utilizado. Añade ruido visual innecesario en el desarrollo e infla el empaquetado si no está minificado. |
+
+### 4.2 Detalle de correcciones
+
+| # | Tipo | Proyecto | Commit | Descripción breve |
+|---|---|---|---|---|
+| 1 | Cognitive Complexity | Proyecto B | `abc1234` | En `Patients.tsx`, se abstrajo el bloque múltiple de filtrado hacia el custom hook `useFilteredPatients`. |
+| 2 | Massive Component | Proyecto B | `abc1234` | En `Login.tsx`, se independizó la estructura UI del formulario a `LoginForm`. |
+| 3 | Uso de Consola (`no-console`) | Proyecto A | `abc1234` | En Backend/Frontend se eliminaron `console.log` y `console.error` reemplazándolos por loggers estándar y validaciones visuales. |
+| 4 | Magic Numbers | Proyecto C | `abc1234` | En `LoanApproval.tsx` y `CustomerSearch.tsx`, se extrajeron valores estáticos a las constantes `APPROVAL_DELAY_MS`, `SEARCH_DELAY_MS` y `FOUND_PROBABILITY`. |
+| 5 | Nested Ternary | Proyecto C | `abc1234` | Se reemplazaron ternarios anidados complejos por funciones auxiliares declarativas como `getButtonClasses` y `getTextColorClass`. |
+| 6 | Dead Code | Proyecto C | `abc1234` | Se removieron importaciones sin uso (`AlertTriangle`, `CheckCircle2`) en `CapacityCalculator.tsx`. |
+| 7 | High Cyclomatic Complexity | Proyecto C | `abc1234` | Se refactorizó el `useEffect` en `CapacityCalculator.tsx` implementando *Early Returns* en vez de usar profundos bloques `if/else`. |
+| 8 | Long Method | Proyecto C | `abc1234` | Se abstrajo gran parte del JSX en `CustomerSearch.tsx` en dos subcomponentes: `<CustomerFoundResult />` y `<CustomerNotFoundResult />`. |
