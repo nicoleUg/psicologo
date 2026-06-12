@@ -285,7 +285,10 @@ describe('isTimeConflict', () => {
   });
 });
 Código después (src/test/timeUtils.test.ts):
+
 ```
+reporte final con codesmells arreglados
+![alt text](image-24.png)
 Sección 4 — Trazabilidad HU → CA → test
 | # | Historia de Usuario | Criterio de Aceptación | Prueba que valida ese CA | Commit |
 |---|---|---|---|---|
@@ -342,7 +345,7 @@ Como [psicólogo] quiero [validar el nombre completo de los pacientes] para [no 
 
 Criterio de Aceptación elegido:
 
-Dado el [campo de texto para el nombre del paciente] / Cuando introduzco [una sola palabra (ejemplo: "Ana")] / Entonces [lEntonces la función de validación retorna falso].
+Dado el [campo de texto para el nombre del paciente] / Cuando introduzco [una sola palabra (ejemplo: "Ana")] / Entonces [Entonces la función de validación retorna falso].
 
 Prueba que valida este CA:
 ```typescript
