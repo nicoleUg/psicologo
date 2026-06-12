@@ -151,3 +151,6 @@ export function isValidFullName(name: string): boolean {
   return words.length >= 2;
 }
 ```
+coverage final 
+![alt text](image-21.png)
+![alt text](image-22.png)
