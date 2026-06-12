@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isTimeConflict, timeToMinutes } from '../app/lib/timeUtils';
+import { isTimeConflict } from '../app/lib/timeUtils';
 
 describe('isTimeConflict', () => {
   it('debe detectar un cruce cuando los horarios se superponen', () => {

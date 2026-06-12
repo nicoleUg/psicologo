@@ -183,8 +183,8 @@ Seccion 3 --Code Smells corregidos
 | # | Tipo | Commit | Descripción |
 |---|---|---|---|
 | 1 | [Inseguridad de Tipos (Uso de any)] | [`8741bfe`](https://github.com/nicoleUg/psicologo/commit/8741bfee9711bac51f3e70c7af0a73be94f2e1eb) | [Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto.] |
-| 2 | [Magic Strings / Duplicación de literales] | [`b2c3d4e`](https://github.com/usuario/repo/commit/b2c3d4e) | [Antes: Cadenas de texto repetidas en aserciones de prueba. → Después: Extracción de strings a variables constantes.] |
-| 3 | [Tipo] | [`c3d4e5f`](https://github.com/usuario/repo/commit/c3d4e5f) | [Antes: X → Después: Y] |
+| 2 | [Magic Strings / Duplicación de literales] | [`8ded2df`](https://github.com/nicoleUg/psicologo/commit/8ded2df92f058850c3cbc92425cc3f2aeaf877e6) | [Antes: Cadenas de texto repetidas en aserciones de prueba. → Después: Extracción de strings a variables constantes.] |
+| 3 | [Dead Code (Imports sin usar)] | [`c3d4e5f`](https://github.com/usuario/repo/commit/c3d4e5f) | [Antes: Importación innecesaria que generaba advertencias del linter. → Después: Eliminación del código muerto.] |
 
 Detalle — Smell 1: Inseguridad de Tipos (Uso de any)
 Código antes (src/app/pages/Login.tsx):
@@ -258,3 +258,30 @@ describe('HU 9: Búsqueda avanzada de pacientes', () => {
   });
 });
 ```
+Detalle — Smell 3: Dead Code (Imports sin usar)
+Código antes (src/test/timeUtils.test.ts):
+
+```TypeScript
+import { describe, it, expect } from 'vitest';
+import { isTimeConflict, timeToMinutes } from '../app/lib/timeUtils';
+
+describe('isTimeConflict', () => {
+  it('debe detectar un cruce cuando los horarios se superponen', () => {
+    const hasConflict = isTimeConflict("08:00", "09:00", "08:30", "09:30");
+    expect(hasConflict).toBe(true);
+  });
+});
+```
+Código después (src/test/timeUtils.test.ts):
+
+```TypeScript
+import { describe, it, expect } from 'vitest';
+import { isTimeConflict } from '../app/lib/timeUtils';
+
+describe('isTimeConflict', () => {
+  it('debe detectar un cruce cuando los horarios se superponen', () => {
+    const hasConflict = isTimeConflict("08:00", "09:00", "08:30", "09:30");
+    expect(hasConflict).toBe(true);
+  });
+});
+Código después (src/test/timeUtils.test.ts):
