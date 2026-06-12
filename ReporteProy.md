@@ -67,10 +67,11 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 ```
 2.2 HU-11:Validacion de telefono movil 
 2.2.1 Prueba roja
+como se esperaba fallo
 ![alt text](image-13.png)
 ![alt text](image-14.png)
 ![alt text](image-12.png)
-commit 1 Rojo [] 
+commit 1 Rojo [39dd26d] https://github.com/nicoleUg/psicologo/commit/39dd26d1b08c0f21828c7cc05d58eb6af0d75e94 
 ```typescript
 
 describe('isValidMobilePhone', () => {
@@ -84,4 +85,15 @@ describe('isValidMobilePhone', () => {
     expect(isValidMobilePhone("+591 21234567")).toBe(false); 
   });
 });
+```
+2.2.2 prueba verde 
+![alt text](image-15.png)
+commit verde 
+```typescript
+export function isValidMobilePhone(phone: string): boolean {
+  if (phone.includes("+591 7") || phone.includes("+591 6")) {
+    return true;
+  }
+  return false;
+}
 ```
