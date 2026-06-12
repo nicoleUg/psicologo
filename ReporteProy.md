@@ -13,6 +13,8 @@ url2 del despliegue:https://psicologoagenda.netlify.app/
 ![alt text](image-2.png)
 Seccion 2--Pruebas con TDD + cobertura
 cobertura inicial(esto depues de ec2)
+Herramienta: Vitest / Istanbul npx vitest run --coverage
+
 ![alt text](image-4.png)
 ![alt text](image-5.png)
 ![alt text](image-3.png)
@@ -180,19 +182,17 @@ Seccion 3 --Code Smells corregidos
 ![alt text](image-23.png)
 | # | Tipo | Commit | Descripción |
 |---|---|---|---|
-| 1 | [Inseguridad de Tipos (Uso de any)] | [`a1b2c3d`](https://github.com/usuario/repo/commit/a1b2c3d) | [Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto.] |
-| 2 | [Tipo] | [`b2c3d4e`](https://github.com/usuario/repo/commit/b2c3d4e) | [Antes: X → Después: Y] |
+| 1 | [Inseguridad de Tipos (Uso de any)] | [`8741bfe`](https://github.com/nicoleUg/psicologo/commit/8741bfee9711bac51f3e70c7af0a73be94f2e1eb) | [Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto.] |
+| 2 | [Magic Strings / Duplicación de literales] | [`b2c3d4e`](https://github.com/usuario/repo/commit/b2c3d4e) | [Antes: Cadenas de texto repetidas en aserciones de prueba. → Después: Extracción de strings a variables constantes.] |
 | 3 | [Tipo] | [`c3d4e5f`](https://github.com/usuario/repo/commit/c3d4e5f) | [Antes: X → Después: Y] |
 
 Detalle — Smell 1: Inseguridad de Tipos (Uso de any)
 Código antes (src/app/pages/Login.tsx):
 ```typescript
-
-// Eslint Warning: Unexpected any. Specify a different type.
 function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: any) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      -// {...}
+      // {...}
     </form>
   );
 }
@@ -211,8 +211,50 @@ interface LoginFormProps {
 function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: LoginFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      -{/* ... */}
+      //{...}
     </form>
   );
 }
+```
+Detalle — Smell 2: Magic Strings / Duplicación de literales
+Código antes (src/test/PatientsSearch.test.tsx):
+```typescript
+const mockPatients = [
+  { id: '1', fullName: 'Maria Quispe Mamani', phone: '+591 7123 4567' },
+  { id: '2', fullName: 'Juan Choque Flores', phone: '+591 7214 5678' },
+];
+
+describe('HU 9: Búsqueda avanzada de pacientes', () => {
+  it('Filtra la lista de pacientes...', async () => {
+    // ...
+    expect(screen.getByText('Maria Quispe Mamani')).toBeInTheDocument();
+    expect(screen.getByText('Juan Choque Flores')).toBeInTheDocument();
+    // ...
+    expect(screen.queryByText('Maria Quispe Mamani')).not.toBeInTheDocument();
+    expect(screen.getByText('Juan Choque Flores')).toBeInTheDocument();
+  });
+});
+```
+
+Código después (src/test/PatientsSearch.test.tsx):
+
+```typescript
+const PATIENT_MARIA = 'Maria Quispe Mamani';
+const PATIENT_JUAN = 'Juan Choque Flores';
+
+const mockPatients = [
+  { id: '1', fullName: PATIENT_MARIA, phone: '+591 7123 4567' },
+  { id: '2', fullName: PATIENT_JUAN, phone: '+591 7214 5678' },
+];
+
+describe('HU 9: Búsqueda avanzada de pacientes', () => {
+  it('Filtra la lista de pacientes...', async () => {
+    // ...
+    expect(screen.getByText(PATIENT_MARIA)).toBeInTheDocument();
+    expect(screen.getByText(PATIENT_JUAN)).toBeInTheDocument();
+    // ...
+    expect(screen.queryByText(PATIENT_MARIA)).not.toBeInTheDocument();
+    expect(screen.getByText(PATIENT_JUAN)).toBeInTheDocument();
+  });
+});
 ```
