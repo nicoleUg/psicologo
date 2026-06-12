@@ -129,7 +129,7 @@ describe('isValidFullName', () => {
 });
 ```
 2.3.2 prueba verde 
-commit verde []
+commit verde [4efcf92] https://github.com/nicoleUg/psicologo/commit/4efcf924b22a6455d7708d183d412f751c8657ac
 ![alt text](image-19.png)
 ```typescript
 export function isValidFullName(name: string): boolean {
@@ -138,5 +138,16 @@ export function isValidFullName(name: string): boolean {
     return true;
   }
   return false;
+}
+```
+
+2.3.3 refactor 
+![alt text](image-20.png)
+commit refactor [] 
+```typescript
+export function isValidFullName(name: string): boolean {
+  if (!name) return false;
+  const words = name.trim().split(/\s+/);
+  return words.length >= 2;
 }
 ```

@@ -4,9 +4,7 @@ export function isValidMobilePhone(phone: string): boolean {
   return phoneRegex.test(normalized);
 }
 export function isValidFullName(name: string): boolean {
-  const parts = name.split(' ');
-  if (parts.length >= 2) {
-    return true;
-  }
-  return false;
+  if (!name) return false;
+  const words = name.trim().split(/\s+/);
+  return words.length >= 2;
 }
