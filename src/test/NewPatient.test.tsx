@@ -36,10 +36,8 @@ describe('HU 4: Registro de un nuevo paciente', () => {
     const submitButton = screen.getByRole('button', { name: /registrar paciente/i });
 
     await userEvent.type(nameInput, 'Carlos Mendoza');
-    // No llenamos el teléfono
     fireEvent.click(submitButton);
 
-    // El navegador o React interrumpe por el atributo 'required' o validación interna
     expect(mockAddPatient).not.toHaveBeenCalled();
   });
 });

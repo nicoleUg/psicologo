@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">70% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/20</span>
+                <span class='fraction'>14/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>5/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>3/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">68.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>13/19</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -263,43 +263,43 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -440,15 +440,15 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { calculateDuration } from '../lib/timeUtils';
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >AppointmentDetail() {</span>
-  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
-  const { id <span class="cstat-no" title="statement not covered" >} = useParams&lt;{ id: string }&gt;();</span>
-  const { appointments, getPatient, deleteAppointment <span class="cstat-no" title="statement not covered" >} = useApp();</span>
+export function AppointmentDetail() {
+  const navigate = useNavigate();
+  const { id } = useParams&lt;{ id: string }&gt;();
+  const { appointments, getPatient, deleteAppointment } = useApp();
 &nbsp;
-  const appointment = <span class="cstat-no" title="statement not covered" >appointments.find(<span class="fstat-no" title="function not covered" >(a</span>pt) =&gt; <span class="cstat-no" title="statement not covered" >apt.id === id)</span>;</span>
-  const patient = <span class="cstat-no" title="statement not covered" >appointment ? getPatient(appointment.patientId) : null;</span>
+  const appointment = appointments.find((apt) =&gt; apt.id === id);
+  const patient = appointment ? getPatient(appointment.patientId) : <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (!appointment || !patient) {</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!appointment || !patient) {
 <span class="cstat-no" title="statement not covered" >    return (</span>
       &lt;div className="min-h-screen bg-gray-50 flex items-center justify-center"&gt;
         &lt;Card className="max-w-md"&gt;
@@ -461,23 +461,23 @@ export function <span class="fstat-no" title="function not covered" >Appointment
     );
   }
 &nbsp;
-  const handleDelete = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
-    const success = <span class="cstat-no" title="statement not covered" >await deleteAppointment(appointment.id);</span>
+  const handleDelete = async () =&gt; {
+    const success = await deleteAppointment(appointment.id);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (!success) {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error(</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!success) {
+      toast.error(
         'No se pudo cancelar la cita en Supabase. Verifique la tabla public.appointments y sus policies.'
       );
-<span class="cstat-no" title="statement not covered" >      return;</span>
+      return;
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    toast.success('Cita cancelada correctamente');</span>
 <span class="cstat-no" title="statement not covered" >    navigate('/calendar');</span>
   };
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >appointmentDate = parseISO(appointment.date);</span>
+  const appointmentDate = parseISO(appointment.date);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;div className="min-h-screen bg-gray-50"&gt;
       &lt;header className="bg-white border-b sticky top-0 z-10"&gt;
         &lt;div className="max-w-3xl mx-auto px-4 py-4 sm:px-6"&gt;
@@ -604,7 +604,7 @@ export function <span class="fstat-no" title="function not covered" >Appointment
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-23T01:09:21.460Z
+                at 2026-06-12T21:13:08.753Z
             </div>
         <script src="../prettify.js"></script>
         <script>

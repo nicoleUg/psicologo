@@ -35,14 +35,12 @@ describe('HU 9: Búsqueda avanzada de pacientes', () => {
       </BrowserRouter>
     );
 
-    // Ambos pacientes deben estar visibles inicialmente
     expect(screen.getByText('Maria Quispe Mamani')).toBeInTheDocument();
     expect(screen.getByText('Juan Choque Flores')).toBeInTheDocument();
 
     const searchInput = screen.getByPlaceholderText(/buscar/i);
     await userEvent.type(searchInput, 'Juan');
 
-    // Mapea la vista filtrada
     expect(screen.queryByText('Maria Quispe Mamani')).not.toBeInTheDocument();
     expect(screen.getByText('Juan Choque Flores')).toBeInTheDocument();
   });

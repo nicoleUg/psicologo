@@ -1,16 +1,11 @@
 import { MINUTES_IN_HOUR, DEFAULT_SLOT_MINUTES } from './constants';
 
-/**
- * Converts a "HH:mm" time string into total minutes since midnight.
- */
+
 export function timeToMinutes(time: string): number {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * MINUTES_IN_HOUR + minutes;
 }
 
-/**
- * Converts total minutes since midnight back into a "HH:mm" time string.
- */
 export function minutesToTime(totalMinutes: number): string {
   const hours = Math.floor(totalMinutes / MINUTES_IN_HOUR)
     .toString()
@@ -19,16 +14,12 @@ export function minutesToTime(totalMinutes: number): string {
   return `${hours}:${minutes}`;
 }
 
-/**
- * Calculates the duration between two "HH:mm" times in minutes.
- */
+
 export function calculateDuration(startTime: string, endTime: string): number {
   return timeToMinutes(endTime) - timeToMinutes(startTime);
 }
 
-/**
- * Generates an array of "HH:mm" time strings between start and end times, incremented by stepMinutes.
- */
+
 export function generateTimeSlots(
   start: string,
   end: string,
@@ -45,9 +36,6 @@ export function generateTimeSlots(
   return slots;
 }
 
-/**
- * Validates if a candidate time is within available slots, falling back if not.
- */
 export function getValidTime(
   candidate: string | null,
   timeSlots: string[],
@@ -62,9 +50,7 @@ export function getValidTime(
   return timeSlots[0] ?? preferred;
 }
 
-/**
- * Returns a valid end time that is strictly after the start time.
- */
+
 export function getValidEndTime(
   candidate: string | null,
   startTime: string,
@@ -81,4 +67,9 @@ export function getValidEndTime(
   }
 
   return timeSlots[timeSlots.length - 1] ?? startTime;
+}
+
+
+export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
+  return timeToMinutes(start1) < timeToMinutes(end2) && timeToMinutes(start2) < timeToMinutes(end1);
 }
