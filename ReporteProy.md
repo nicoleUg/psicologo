@@ -40,7 +40,7 @@ describe('isTimeConflict', () => {
 como lo planeado paso el test
 ![alt text](image-8.png)
 ![alt text](image-9.png)
-commit 2 Verde []
+commit 2 Verde [abbdd1b] https://github.com/nicoleUg/psicologo/commit/abbdd1b58b8f9c250042a8ad6c761eb44cba601b 
 ```typescript
 export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
   const s1 = timeToMinutes(start1);
@@ -56,4 +56,12 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 ```
 2.1.3 Refactorizacion 
 refactor al codigo para que sea mas  legible e entendible 
+![alt text](image-10.png)
+![alt text](image-11.png)
+commit 3 refactorizacion [] '
+```typescript
+export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
+  return timeToMinutes(start1) < timeToMinutes(end2) && timeToMinutes(start2) < timeToMinutes(end1);
+}
 
+```
