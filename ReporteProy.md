@@ -17,4 +17,9 @@ cobertura inicial(esto depues de ec2)
 ![alt text](image-5.png)
 ![alt text](image-3.png)
 ![alt text](image-6.png)
-primero atacaremos a lo que es los cruces de horarios en las citas para eso en nuestro archivo timeUtils.test.ts crearemos un test pero siguiendo los principios de tdd haremos que falle 
+2.1 Ciclo TDD 1 — HU-08 (Cruce de horarios)
+primero atacaremos a lo que es los cruces de horarios en las citas para eso creamos nuestro archivo timeUtils.test.ts crearemos un test pero siguiendo los principios de tdd haremos que falle 
+2.1.1. Prueba roja
+como lo planeado fallo la prueba
+![alt text](image-7.png)
+commit 
