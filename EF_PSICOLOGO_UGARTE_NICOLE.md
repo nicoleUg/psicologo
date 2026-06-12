@@ -24,7 +24,7 @@ primero atacaremos a lo que es los cruces de horarios en las citas para eso crea
 
 Como psicólogo quiero que el sistema detecte si dos citas se superponen para evitar programar pacientes en el mismo horario.
 
-CA elegido: “Si el inicio de una franja cae dentro de otra, el sistema devuelve que hay conflicto (true).
+CA elegido: Si el inicio de una franja cae dentro de otra, el sistema devuelve que hay conflicto (true).
 
 2.1.1. Prueba roja
 como lo planeado fallo la prueba
