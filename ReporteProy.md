@@ -22,4 +22,38 @@ primero atacaremos a lo que es los cruces de horarios en las citas para eso crea
 2.1.1. Prueba roja
 como lo planeado fallo la prueba
 ![alt text](image-7.png)
-commit 
+commit 1 Rojo [a92f591] https://github.com/nicoleUg/psicologo/commit/a92f591d51019cd2ddb736af746ee5a7e4836000 
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { isTimeConflict, timeToMinutes } from '../app/lib/timeUtils';
+
+describe('isTimeConflict', () => {
+  it('debe detectar un cruce cuando los horarios se superponen', () => {
+    // cita 1: 08:00 a 09:00 y cita 2: 08:30 a 09:30 (Hay conflicto)
+    const hasConflict = isTimeConflict("08:00", "09:00", "08:30", "09:30");
+    expect(hasConflict).toBe(true);
+  });
+});'
+```
+2.1.2 Fase en verde 
+como lo planeado paso el test
+![alt text](image-8.png)
+![alt text](image-9.png)
+commit 2 Verde []
+```typescript
+export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
+  const s1 = timeToMinutes(start1);
+  const e1 = timeToMinutes(end1);
+  const s2 = timeToMinutes(start2);
+  const e2 = timeToMinutes(end2);
+  
+  if (s1 < e2 && s2 < e1) {
+    return true;
+  }
+  return false;
+}
+```
+2.1.3 Refactorizacion 
+refactor al codigo para que sea mas  legible e entendible 
+
