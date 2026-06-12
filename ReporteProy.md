@@ -177,3 +177,42 @@ coverage final
 La corbertura final se encuentra en un 87.8% donde directamente atacamos a la logica de negocios en la carpeta lib, ya que anteriormente hice pruebas de integracion por esa razon se llega a mostrar las otras carpetas 
 
 Seccion 3 --Code Smells corregidos 
+![alt text](image-23.png)
+| # | Tipo | Commit | Descripción |
+|---|---|---|---|
+| 1 | [Inseguridad de Tipos (Uso de any)] | [`a1b2c3d`](https://github.com/usuario/repo/commit/a1b2c3d) | [Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto.] |
+| 2 | [Tipo] | [`b2c3d4e`](https://github.com/usuario/repo/commit/b2c3d4e) | [Antes: X → Después: Y] |
+| 3 | [Tipo] | [`c3d4e5f`](https://github.com/usuario/repo/commit/c3d4e5f) | [Antes: X → Después: Y] |
+
+Detalle — Smell 1: Inseguridad de Tipos (Uso de any)
+Código antes (src/app/pages/Login.tsx):
+```typescript
+
+// Eslint Warning: Unexpected any. Specify a different type.
+function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: any) {
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      -// {...}
+    </form>
+  );
+}
+```
+Código después (src/app/pages/Login.tsx):
+```typescript
+interface LoginFormProps {
+  email: string;
+  setEmail: (value: string) => void;
+  password: string;
+  setPassword: (value: string) => void;
+  isLoading: boolean;
+  handleSubmit: (e: React.FormEvent) => void;
+}
+
+function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: LoginFormProps) {
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      -{/* ... */}
+    </form>
+  );
+}
+```

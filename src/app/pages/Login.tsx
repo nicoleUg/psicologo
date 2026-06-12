@@ -7,8 +7,15 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Calendar, Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
-
-function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: any) {
+interface LoginFormProps {
+  email: string;
+  setEmail: (value: string) => void;
+  password: string;
+  setPassword: (value: string) => void;
+  isLoading: boolean;
+  handleSubmit: (e: React.FormEvent) => void;
+}
+function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: LoginFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
