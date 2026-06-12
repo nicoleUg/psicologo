@@ -65,3 +65,23 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 }
 
 ```
+2.2 HU-11:Validacion de telefono movil 
+2.2.1 Prueba roja
+![alt text](image-13.png)
+![alt text](image-14.png)
+![alt text](image-12.png)
+commit 1 Rojo [] 
+```typescript
+
+describe('isValidMobilePhone', () => {
+  it('debe validar un número móvil correcto con prefijo +591', () => {
+    expect(isValidMobilePhone("+591 71234567")).toBe(true);
+    expect(isValidMobilePhone("+591 69876543")).toBe(true);
+  });
+
+  it('debe rechazar números con formato inválido o longitud incorrecta', () => {
+    expect(isValidMobilePhone("12345")).toBe(false); 
+    expect(isValidMobilePhone("+591 21234567")).toBe(false); 
+  });
+});
+```
