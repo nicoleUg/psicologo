@@ -143,7 +143,7 @@ export function isValidFullName(name: string): boolean {
 
 2.3.3 refactor 
 ![alt text](image-20.png)
-commit refactor [] 
+commit refactor [d21a590] https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d
 ```typescript
 export function isValidFullName(name: string): boolean {
   if (!name) return false;
