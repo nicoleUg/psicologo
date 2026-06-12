@@ -58,7 +58,7 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 refactor al codigo para que sea mas  legible e entendible 
 ![alt text](image-10.png)
 ![alt text](image-11.png)
-commit 3 refactorizacion [] '
+commit 3 refactorizacion [ec07f48] https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870 
 ```typescript
 export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
   return timeToMinutes(start1) < timeToMinutes(end2) && timeToMinutes(start2) < timeToMinutes(end1);
