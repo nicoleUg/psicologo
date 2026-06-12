@@ -101,7 +101,7 @@ export function isValidMobilePhone(phone: string): boolean {
 2.2.3 Refactor 
 refactor al codigo para que sea mas  legible e entendible 
 ![alt text](image-16.png)
-commit refactor []
+commit refactor [faa23f9] https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329 
 
 ```typescript
 
