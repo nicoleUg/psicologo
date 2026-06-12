@@ -1,6 +1,5 @@
 export function isValidMobilePhone(phone: string): boolean {
-  if (phone.includes("+591 7") || phone.includes("+591 6")) {
-    return true;
-  }
-  return false;
+  const normalized = phone.replace(/\s/g, '');
+  const phoneRegex = /^\+591[67]\d{7}$/;
+  return phoneRegex.test(normalized);
 }

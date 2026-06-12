@@ -88,12 +88,26 @@ describe('isValidMobilePhone', () => {
 ```
 2.2.2 prueba verde 
 ![alt text](image-15.png)
-commit verde 
+como se esperaba paso el test
+commit verde [1193b01] https://github.com/nicoleUg/psicologo/commit/1193b01da0d521b50969886467db3e89e365a5fa 
 ```typescript
 export function isValidMobilePhone(phone: string): boolean {
   if (phone.includes("+591 7") || phone.includes("+591 6")) {
     return true;
   }
   return false;
+}
+```
+2.2.3 Refactor 
+refactor al codigo para que sea mas  legible e entendible 
+![alt text](image-16.png)
+commit refactor []
+
+```typescript
+
+export function isValidMobilePhone(phone: string): boolean {
+  const normalized = phone.replace(/\s/g, '');
+  const phoneRegex = /^\+591[67]\d{7}$/;
+  return phoneRegex.test(normalized);
 }
 ```
