@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">41.17% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>7/17</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>2/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">41.17% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>7/17</span>
             </div>
         
             
@@ -196,25 +196,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -224,6 +217,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,7 +258,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -317,14 +317,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { ArrowLeft, Phone, User } from 'lucide-react';
 import { toast } from 'sonner';
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >NewPatient() {</span>
-  const <span class="cstat-no" title="statement not covered" >navigate = useNavigate();</span>
-  const { addPatient <span class="cstat-no" title="statement not covered" >} = useApp();</span>
+export function NewPatient() {
+  const navigate = useNavigate();
+  const { addPatient } = useApp();
 &nbsp;
-  const [fullName, setFullName<span class="cstat-no" title="statement not covered" >] = useState('');</span>
-  const [phone, setPhone<span class="cstat-no" title="statement not covered" >] = useState('');</span>
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
 &nbsp;
-  const handleSubmit = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async (e</span>: React.FormEvent) =&gt; {</span>
+  const handleSubmit = <span class="fstat-no" title="function not covered" >async (e</span>: React.FormEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >    e.preventDefault();</span>
 &nbsp;
     const newPatient = <span class="cstat-no" title="statement not covered" >await addPatient({</span>
@@ -343,7 +343,7 @@ export function <span class="fstat-no" title="function not covered" >NewPatient(
 <span class="cstat-no" title="statement not covered" >    navigate('/patients');</span>
   };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;div className="min-h-screen bg-gray-50"&gt;
       &lt;header className="bg-white border-b sticky top-0 z-10"&gt;
         &lt;div className="max-w-3xl mx-auto px-4 py-4 sm:px-6"&gt;
@@ -380,7 +380,7 @@ export function <span class="fstat-no" title="function not covered" >NewPatient(
                     type="text"
                     placeholder="Ej: Maria Quispe Mamani"
                     value={fullName}
-                    onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >setFullName(e.target.value)}</span>
+                    onChange={(e) =&gt; setFullName(e.target.value)}
                     className="pl-10"
                     required
                     minLength={3}
@@ -436,7 +436,7 @@ export function <span class="fstat-no" title="function not covered" >NewPatient(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-23T01:09:21.460Z
+                at 2026-06-12T15:14:41.499Z
             </div>
         <script src="../prettify.js"></script>
         <script>

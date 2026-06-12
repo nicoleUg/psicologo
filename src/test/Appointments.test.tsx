@@ -10,7 +10,6 @@ vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn() }
 }));
 
-// Mapeamos una cita existente para forzar el choque
 const mockAppointments = [
   { id: '1', patientId: 'p1', date: '2026-02-26', startTime: '14:00', endTime: '15:00' },
 ];
@@ -23,7 +22,6 @@ const mockPatients = [
 describe('HU 5 y HU 8: Gestión de Citas', () => {
   it('HU 5: Bloquea y emite alerta si se intenta agendar en un horario ya ocupado', async () => {
     const mockAddAppointment = vi.fn().mockImplementation(() => {
-      // Lógica de validación simulada en el provider/componente
       return false; 
     });
 
@@ -50,8 +48,6 @@ describe('HU 5 y HU 8: Gestión de Citas', () => {
       </MemoryRouter>
     );
 
-    // Simular el intento de guardar a la misma hora (14:00)
-    // Asumiendo que el componente llama a addAppointment y maneja el rechazo
     const success = await mockAddAppointment({
       patientId: 'p2',
       date: '2026-02-26',
