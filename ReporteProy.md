@@ -19,11 +19,16 @@ cobertura inicial(esto depues de ec2)
 ![alt text](image-6.png)
 2.1 Ciclo TDD 1 — HU-08 (Cruce de horarios)
 primero atacaremos a lo que es los cruces de horarios en las citas para eso creamos nuestro archivo timeUtils.test.ts crearemos un test pero siguiendo los principios de tdd haremos que falle 
+
+Como psicólogo quiero que el sistema detecte si dos citas se superponen para evitar programar pacientes en el mismo horario.
+
+CA elegido: “Si el inicio de una franja cae dentro de otra, el sistema devuelve que hay conflicto (true).
+
 2.1.1. Prueba roja
 como lo planeado fallo la prueba
 ![alt text](image-7.png)
 commit 1 Rojo [a92f591] https://github.com/nicoleUg/psicologo/commit/a92f591d51019cd2ddb736af746ee5a7e4836000 
-
+test: [HU-08] agregar test para validacion de cruce de horarios
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { isTimeConflict, timeToMinutes } from '../app/lib/timeUtils';
@@ -41,6 +46,7 @@ como lo planeado paso el test
 ![alt text](image-8.png)
 ![alt text](image-9.png)
 commit 2 Verde [abbdd1b] https://github.com/nicoleUg/psicologo/commit/abbdd1b58b8f9c250042a8ad6c761eb44cba601b 
+feat: [HU-08] implementar isTimeConflict para pasar test
 ```typescript
 export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
   const s1 = timeToMinutes(start1);
@@ -59,6 +65,7 @@ refactor al codigo para que sea mas  legible e entendible
 ![alt text](image-10.png)
 ![alt text](image-11.png)
 commit 3 refactorizacion [ec07f48] https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870 
+refactor: [HU-08] simplificar retorno booleano en isTimeConflict
 ```typescript
 export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
   return timeToMinutes(start1) < timeToMinutes(end2) && timeToMinutes(start2) < timeToMinutes(end1);
@@ -66,12 +73,17 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 
 ```
 2.2 HU-11:Validacion de telefono movil 
+Como sistema requiero validar que los teléfonos ingresados tengan formato válido de celular para asegurar el contacto con el paciente.
+
+CA elegido: Dado un número de teléfono, el sistema debe retornar verdadero si tiene el prefijo +591 seguido de un 6 o 7 y la longitud correcta, rechazando formatos inválidos.
+
 2.2.1 Prueba roja
 como se esperaba fallo
 ![alt text](image-13.png)
 ![alt text](image-14.png)
 ![alt text](image-12.png)
 commit 1 Rojo [39dd26d] https://github.com/nicoleUg/psicologo/commit/39dd26d1b08c0f21828c7cc05d58eb6af0d75e94 
+test: [HU-11] agregar test para validacion de telefono de paciente
 ```typescript
 
 describe('isValidMobilePhone', () => {
@@ -90,6 +102,7 @@ describe('isValidMobilePhone', () => {
 ![alt text](image-15.png)
 como se esperaba paso el test
 commit verde [1193b01] https://github.com/nicoleUg/psicologo/commit/1193b01da0d521b50969886467db3e89e365a5fa 
+feat: [HU-11] implementar isValidMobilePhone para pasar test
 ```typescript
 export function isValidMobilePhone(phone: string): boolean {
   if (phone.includes("+591 7") || phone.includes("+591 6")) {
@@ -102,7 +115,7 @@ export function isValidMobilePhone(phone: string): boolean {
 refactor al codigo para que sea mas  legible e entendible 
 ![alt text](image-16.png)
 commit refactor [faa23f9] https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329 
-
+refactor: [HU-11] usar regex estricta en validacion de telefono
 ```typescript
 
 export function isValidMobilePhone(phone: string): boolean {
@@ -112,9 +125,14 @@ export function isValidMobilePhone(phone: string): boolean {
 }
 ```
 2.3 HU-12: Validación de Nombre Completo 
+Como recepcionista quiero que el sistema me obligue a ingresar al menos nombre y apellido para no tener registros incompletos.
+
+CA elegido: Dado un string de entrada, la función debe verificar que contenga al menos dos palabras separadas por espacio.
+
 2.3.1 Prueba roja 
 fallo 
 commit rojo [8e8ce32] https://github.com/nicoleUg/psicologo/commit/8e8ce323d09203b414ad38d678abff04da135e93 
+test: [HU-12] agregar test para longitud minima del nombre del paciente
 ![alt text](image-17.png)
 ![alt text](image-18.png)
 ```typescript
@@ -130,6 +148,7 @@ describe('isValidFullName', () => {
 ```
 2.3.2 prueba verde 
 commit verde [4efcf92] https://github.com/nicoleUg/psicologo/commit/4efcf924b22a6455d7708d183d412f751c8657ac
+feat: [HU-12] implementar split para validar nombre completo
 ![alt text](image-19.png)
 ```typescript
 export function isValidFullName(name: string): boolean {
@@ -144,6 +163,7 @@ export function isValidFullName(name: string): boolean {
 2.3.3 refactor 
 ![alt text](image-20.png)
 commit refactor [d21a590] https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d
+refactor: [HU-12] sanear espacios en blanco al validar nombre completo
 ```typescript
 export function isValidFullName(name: string): boolean {
   if (!name) return false;
@@ -154,3 +174,6 @@ export function isValidFullName(name: string): boolean {
 coverage final 
 ![alt text](image-21.png)
 ![alt text](image-22.png)
+La corbertura final se encuentra en un 87.8% donde directamente atacamos a la logica de negocios en la carpeta lib, ya que anteriormente hice pruebas de integracion por esa razon se llega a mostrar las otras carpetas 
+
+Seccion 3 --Code Smells corregidos 
