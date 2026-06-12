@@ -184,7 +184,7 @@ Seccion 3 --Code Smells corregidos
 |---|---|---|---|
 | 1 | [Inseguridad de Tipos (Uso de any)] | [`8741bfe`](https://github.com/nicoleUg/psicologo/commit/8741bfee9711bac51f3e70c7af0a73be94f2e1eb) | [Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto.] |
 | 2 | [Magic Strings / Duplicación de literales] | [`8ded2df`](https://github.com/nicoleUg/psicologo/commit/8ded2df92f058850c3cbc92425cc3f2aeaf877e6) | [Antes: Cadenas de texto repetidas en aserciones de prueba. → Después: Extracción de strings a variables constantes.] |
-| 3 | [Dead Code (Imports sin usar)] | [`c3d4e5f`](https://github.com/usuario/repo/commit/c3d4e5f) | [Antes: Importación innecesaria que generaba advertencias del linter. → Después: Eliminación del código muerto.] |
+| 3 | [Dead Code (Imports sin usar)] | [`e8868a7`](https://github.com/nicoleUg/psicologo/commit/e8868a7c26f6a60da44dd5e6255f5e649de23733) | [Antes: Importación innecesaria que generaba advertencias del linter. → Después: Eliminación del código muerto.] |
 
 Detalle — Smell 1: Inseguridad de Tipos (Uso de any)
 Código antes (src/app/pages/Login.tsx):
@@ -285,3 +285,75 @@ describe('isTimeConflict', () => {
   });
 });
 Código después (src/test/timeUtils.test.ts):
+```
+Sección 4 — Trazabilidad HU → CA → test
+| # | Historia de Usuario | Criterio de Aceptación | Prueba que valida ese CA | Commit |
+|---|---|---|---|---|
+| 1 | [[HU-08] Validación de cruce de horarios]  | [Dado un horario guardado / Cuando agendo una cita que se superpone / Entonces retorna conflicto] | [isTimeConflict_HorariosSuperpuestos_RetornaTrue] | [`ec07f48`](https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870) |
+| 2 | [HU-11] Validación de teléfono móvil | [Dado un formulario / Cuando ingreso un teléfono sin formato boliviano / Entonces el sistema lo rechaza] | [isValidMobilePhone_FormatoInvalido_RetornaFalse] | [`faa23f9`](https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329) |
+| 3 | [HU-12] Validación de nombre completo | [Dado el campo nombre / Cuando introduzco una sola palabra / Entonces la validación falla] | [isValidFullName_UnaSolaPalabra_RetornaFalse] | [`d21a590`](https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d) |
+
+Cadena 1 — [HU-08] Validación de cruce de horarios
+Historia de Usuario:
+
+Como [psicólogo] quiero que el [sistema detecte si dos citas se superponen] para [evitar programar pacientes en el mismo horario].
+
+Criterio de Aceptación elegido:
+
+Dado un [horario previamente guardado en el sistema ("08:00"-"09:00")] / Cuando intento agendar una [nueva cita que inicia dentro de ese rango ("08:30"-"09:30")] / Entonces [el validador retorna "true" indicando que hay un conflicto].
+
+Prueba que valida este CA:
+```typescript
+describe('isTimeConflict', () => {
+  it('debe detectar un cruce cuando los horarios se superponen', () => {
+    // cita 1: 08:00 a 09:00 y cita 2: 08:30 a 09:30 (Hay conflicto)
+    const hasConflict = isTimeConflict("08:00", "09:00", "08:30", "09:30");
+    expect(hasConflict).toBe(true);
+  });
+});
+```
+Cadena 2 — [HU-11] Validación de teléfono móvil
+Historia de Usuario:
+
+Como [psicólogo] quiero que el [sistema valide el número de teléfono] para [evitar errores en el registro de pacientes].
+
+Criterio de Aceptación elegido:
+
+Dado un [formulario de registro] / Cuando ingreso un [teléfono sin formato de bolivia (ej: "71234567") ] / Entonces [el validador falla y muestra un mensaje de error, impidiendo el envío de datos].
+
+Prueba que valida este CA:
+```typescript
+describe('isValidMobilePhone', () => {
+  it('debe validar un número móvil correcto con prefijo +591', () => {
+    expect(isValidMobilePhone("+591 71234567")).toBe(true);
+    expect(isValidMobilePhone("+591 69876543")).toBe(true);
+  });
+
+  it('debe rechazar números con formato inválido o longitud incorrecta', () => {
+    expect(isValidMobilePhone("12345")).toBe(false); 
+    expect(isValidMobilePhone("+591 21234567")).toBe(false); 
+  });
+});
+```
+Cadena 3 — [HU-12] Validación de nombre completo
+Historia de Usuario:
+
+Como [psicólogo] quiero [validar el nombre completo de los pacientes] para [no tener registros incompletos].
+
+Criterio de Aceptación elegido:
+
+Dado el [campo de texto para el nombre del paciente] / Cuando introduzco [una sola palabra (ejemplo: "Ana")] / Entonces [lEntonces la función de validación retorna falso].
+
+Prueba que valida este CA:
+```typescript
+describe('isValidFullName', () => {
+  it('debe validar un nombre completo con al menos dos palabras', () => {
+    expect(isValidFullName("Maria Quispe Mamani")).toBe(true);
+  });
+
+  it('debe rechazar nombres que consisten en una sola palabra', () => {
+    expect(isValidFullName("Ana")).toBe(false); 
+    expect(isValidFullName("Juan")).toBe(false); 
+  });
+});
+```
