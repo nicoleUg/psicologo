@@ -114,7 +114,7 @@ export function isValidMobilePhone(phone: string): boolean {
 2.3 HU-12: Validación de Nombre Completo 
 2.3.1 Prueba roja 
 fallo 
-commir rojo []
+commit rojo [8e8ce32] https://github.com/nicoleUg/psicologo/commit/8e8ce323d09203b414ad38d678abff04da135e93 
 ![alt text](image-17.png)
 ![alt text](image-18.png)
 ```typescript
@@ -127,4 +127,16 @@ describe('isValidFullName', () => {
     expect(isValidFullName("Maria")).toBe(false);
   });
 });
+```
+2.3.2 prueba verde 
+commit verde []
+![alt text](image-19.png)
+```typescript
+export function isValidFullName(name: string): boolean {
+  const parts = name.split(' ');
+  if (parts.length >= 2) {
+    return true;
+  }
+  return false;
+}
 ```
