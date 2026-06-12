@@ -111,3 +111,20 @@ export function isValidMobilePhone(phone: string): boolean {
   return phoneRegex.test(normalized);
 }
 ```
+2.3 HU-12: Validación de Nombre Completo 
+2.3.1 Prueba roja 
+fallo 
+commir rojo []
+![alt text](image-17.png)
+![alt text](image-18.png)
+```typescript
+describe('isValidFullName', () => {
+  it('debe aceptar nombres con al menos dos palabras', () => {
+    expect(isValidFullName("Maria Quispe")).toBe(true);
+  });
+
+  it('debe rechazar nombres de una sola palabra', () => {
+    expect(isValidFullName("Maria")).toBe(false);
+  });
+});
+```
