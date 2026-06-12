@@ -4,12 +4,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { Patients } from '../app/pages/Patients';
 import { AppContext } from '../app/context/AppContext';
 import { BrowserRouter } from 'react-router';
+const PATIENT_MARIA = 'Maria Quispe Mamani';
+const PATIENT_JUAN = 'Juan Choque Flores';
 
 const mockPatients = [
-  { id: '1', fullName: 'Maria Quispe Mamani', phone: '+591 7123 4567' },
-  { id: '2', fullName: 'Juan Choque Flores', phone: '+591 7214 5678' },
+  { id: '1', fullName: PATIENT_MARIA, phone: '+591 7123 4567' },
+  { id: '2', fullName: PATIENT_JUAN, phone: '+591 7214 5678' },
 ];
-
 describe('HU 9: Búsqueda avanzada de pacientes', () => {
   it('Filtra la lista de pacientes en tiempo real al escribir en el buscador', async () => {
     render(
@@ -35,13 +36,13 @@ describe('HU 9: Búsqueda avanzada de pacientes', () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Maria Quispe Mamani')).toBeInTheDocument();
-    expect(screen.getByText('Juan Choque Flores')).toBeInTheDocument();
+    expect(screen.getByText(PATIENT_MARIA)).toBeInTheDocument();
+    expect(screen.getByText(PATIENT_JUAN)).toBeInTheDocument();
 
     const searchInput = screen.getByPlaceholderText(/buscar/i);
     await userEvent.type(searchInput, 'Juan');
 
-    expect(screen.queryByText('Maria Quispe Mamani')).not.toBeInTheDocument();
-    expect(screen.getByText('Juan Choque Flores')).toBeInTheDocument();
+    expect(screen.queryByText(PATIENT_MARIA)).not.toBeInTheDocument();
+    expect(screen.getByText(PATIENT_JUAN)).toBeInTheDocument();
   });
 });
