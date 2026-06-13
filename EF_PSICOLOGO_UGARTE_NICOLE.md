@@ -12,9 +12,9 @@
 **Swagger / API:** no aplica
 
 > Captura del proyecto corriendo con datos reales:
-![deploy en produccion](capturas/psicologo-deploy.png)
-![deploy en produccion](capturas/psicologo-deploy2.png)
-![deploy en produccion](capturas/psicologo-deploy3.png)
+![deploy en produccion](capturas psicologo/psicologo-deploy.png)
+![deploy en produccion](capturas psicologo/psicologo-deploy2.png)
+![deploy en produccion](capturas psicologo/psicologo-deploy3.png)
 
 ---
 
@@ -24,10 +24,10 @@
 
 **Herramienta:** Vitest / Istanbul, comando: `npx vitest run --coverage`
 
-![Cobertura inicial](capturas/cobertura_inicial.png)
-![Cobertura inicial 2](capturas/cobertura_inicial2.png)
-![Cobertura inicial 3](capturas/cobertura_inicial3.png)
-![Cobertura inicial 4](capturas/cobertura_inicial4.png)
+![Cobertura inicial](capturas psicologo/cobertura_inicial.png)
+![Cobertura inicial 2](capturas psicologo/cobertura_inicial2.png)
+![Cobertura inicial 3](capturas psicologo/cobertura_inicial3.png)
+![Cobertura inicial 4](capturas psicologo/cobertura_inicial4.png)
 
 ---
 
@@ -60,7 +60,7 @@ describe('isTimeConflict', () => {
 
 > Captura del test fallando:
 
-![Test rojo](capturas/psicologo-tdd1-rojo.png)
+![Test rojo](capturas psicologo/psicologo-tdd1-rojo.png)
 
 ---
 
@@ -85,7 +85,7 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 
 > Captura del test pasando:
 
-![Test verde](capturas/psicologo-tdd1-verde.png)
+![Test verde](capturas psicologo/psicologo-tdd1-verde.png)
 
 ---
 
@@ -102,7 +102,7 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
 
 > Captura del test aún pasando después del refactor:
 
-![Test post-refactor](capturas/psicologo-tdd1-refactor.png)
+![Test post-refactor](capturas psicologo/psicologo-tdd1-refactor.png)
 
 ---
 
@@ -136,7 +136,7 @@ describe('isValidMobilePhone', () => {
 
 > Captura del test fallando:
 
-![Test rojo](capturas/psicologo-tdd2-rojo.png)
+![Test rojo](capturas psicologo/psicologo-tdd2-rojo.png)
 
 ---
 
@@ -156,7 +156,7 @@ export function isValidMobilePhone(phone: string): boolean {
 
 > Captura del test pasando:
 
-![Test verde](capturas/psicologo-tdd2-verde.png)
+![Test verde](capturas psicologo/psicologo-tdd2-verde.png)
 
 ---
 
@@ -175,7 +175,7 @@ export function isValidMobilePhone(phone: string): boolean {
 
 > Captura del test aún pasando después del refactor:
 
-![Test post-refactor](capturas/psicologo-tdd2-refactor.png)
+![Test post-refactor](capturas psicologo/psicologo-tdd2-refactor.png)
 
 ---
 
@@ -207,7 +207,7 @@ describe('isValidFullName', () => {
 
 > Captura del test fallando:
 
-![Test rojo](capturas/psicologo-tdd3-rojo.png)
+![Test rojo](capturas psicologo/psicologo-tdd3-rojo.png)
 
 ---
 
@@ -228,7 +228,7 @@ export function isValidFullName(name: string): boolean {
 
 > Captura del test pasando:
 
-![Test verde](capturas/psicologo-tdd3-verde.png)
+![Test verde](capturas psicologo/psicologo-tdd3-verde.png)
 
 ---
 
@@ -247,7 +247,7 @@ export function isValidFullName(name: string): boolean {
 
 > Captura del test aún pasando después del refactor:
 
-![Test post-refactor](capturas/psicologo-tdd3-refactor.png)
+![Test post-refactor](capturas psicologo/psicologo-tdd3-refactor.png)
 
 ---
 
@@ -257,8 +257,8 @@ export function isValidFullName(name: string): boolean {
 
 > Captura del reporte de cobertura final:
 
-![Cobertura final](capturas/psicologo-cobertura-final.png)
-![Cobertura final 2](capturas/psicologo-cobertura-final2.png)
+![Cobertura final](capturas psicologo/psicologo-cobertura-final.png)
+![Cobertura final 2](capturas psicologo/psicologo-cobertura-final2.png)
 
 > La cobertura final se encuentra en un 87.8% donde directamente atacamos a la lógica de negocios en la carpeta `lib`, ya que anteriormente hice pruebas de integración y por esa razón se llega a mostrar las otras carpetas.
 
@@ -266,7 +266,7 @@ export function isValidFullName(name: string): boolean {
 
 ## Sección 3 — Code smells corregidos
 
-![reporte Codesmells](capturas/psicologo-code-smells.png)
+![reporte Codesmells](capturas psicologo/psicologo-code-smells.png)
 
 Mínimo 3 nuevos (adicionales a los del EC2).
 
@@ -384,7 +384,7 @@ describe('isTimeConflict', () => {
 });
 ```
 
-![reporte Codesmells final](capturas/psicologo-code-smells2.png)
+![reporte Codesmells final](capturas psicologo/psicologo-code-smells2.png)
 
 ---
 
