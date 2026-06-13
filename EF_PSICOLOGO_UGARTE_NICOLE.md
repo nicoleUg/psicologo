@@ -1,39 +1,53 @@
-EF — Reporte de Proyecto
-Estudiante: Sofia Nicole Ugarte Salazar
-Proyecto: Sistema de agenda psicologo
-repositorio: https://github.com/nicoleUg/psicologo.git 
-Fecha de entrega: 13/06/2026 
+# EF — Reporte de Proyecto 
+**Estudiante:** Sofia Nicole Ugarte Salazar
+**Proyecto:** Sistema de agenda psicologo
+**Repositorio:** https://github.com/nicoleUg/psicologo.git
+**Fecha de entrega:** 13/06/2026
 
-seccion 1 --deployment
-URL del despliegue: https://psicologo.leleworks.dev/ 
-url2 del despliegue:https://psicologoagenda.netlify.app/
 
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
-Seccion 2--Pruebas con TDD + cobertura
-cobertura inicial(esto depues de ec2)
-Herramienta: Vitest / Istanbul npx vitest run --coverage
+## Sección 1 — Deploy
 
-![alt text](image-4.png)
-![alt text](image-5.png)
-![alt text](image-3.png)
-![alt text](image-6.png)
-2.1 Ciclo TDD 1 — HU-08 (Cruce de horarios)
-primero atacaremos a lo que es los cruces de horarios en las citas para eso creamos nuestro archivo timeUtils.test.ts crearemos un test pero siguiendo los principios de tdd haremos que falle 
+**URL del despliegue:** https://psicologo.leleworks.dev/
+**url2 del despliegue:** https://psicologoagenda.netlify.app/
+**Swagger / API:** no aplica
 
-Como psicólogo quiero que el sistema detecte si dos citas se superponen para evitar programar pacientes en el mismo horario.
+> Captura del proyecto corriendo con datos reales:
+![deploy en produccion](capturas/psicologo-deploy.png)
+![deploy en produccion](capturas/psicologo-deploy2.png)
+![deploy en produccion](capturas/psicologo-deploy3.png)
 
-CA elegido: “Si el inicio de una franja cae dentro de otra, el sistema devuelve que hay conflicto (true).
+---
 
-2.1.1. Prueba roja
-como lo planeado fallo la prueba
-![alt text](image-7.png)
-commit 1 Rojo [a92f591] https://github.com/nicoleUg/psicologo/commit/a92f591d51019cd2ddb736af746ee5a7e4836000 
+## Sección 2 — Pruebas con TDD + cobertura
+
+### Cobertura inicial (0%)
+
+**Herramienta:** Vitest / Istanbul, comando: `npx vitest run --coverage`
+
+![Cobertura inicial](capturas/cobertura_inicial.png)
+![Cobertura inicial 2](capturas/cobertura_inicial2.png)
+![Cobertura inicial 3](capturas/cobertura_inicial3.png)
+![Cobertura inicial 4](capturas/cobertura_inicial4.png)
+
+---
+
+### Ciclo TDD — Prueba 1
+
+**HU:** [HU-08] Validación de cruce de horarios
+
+> Como psicólogo quiero que el sistema detecte si dos citas se superponen para evitar programar pacientes en el mismo horario.
+
+**CA elegido:** Si el inicio de una franja cae dentro de otra, el sistema devuelve que hay conflicto (true).
+
+**Commit 1 — Rojo** [`a92f591`](https://github.com/nicoleUg/psicologo/commit/a92f591d51019cd2ddb736af746ee5a7e4836000):
+```
 test: [HU-08] agregar test para validacion de cruce de horarios
+```
+Test escrito (sin el código que lo pase aún):
+
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { isTimeConflict, timeToMinutes } from '../app/lib/timeUtils';
+import { isTimeConflict } from '../app/lib/timeUtils';
 
 describe('isTimeConflict', () => {
   it('debe detectar un cruce cuando los horarios se superponen', () => {
@@ -41,14 +55,20 @@ describe('isTimeConflict', () => {
     const hasConflict = isTimeConflict("08:00", "09:00", "08:30", "09:30");
     expect(hasConflict).toBe(true);
   });
-});'
+});
 ```
-2.1.2 Fase en verde 
-como lo planeado paso el test
-![alt text](image-8.png)
-![alt text](image-9.png)
-commit 2 Verde [abbdd1b] https://github.com/nicoleUg/psicologo/commit/abbdd1b58b8f9c250042a8ad6c761eb44cba601b 
+
+> Captura del test fallando:
+
+![Test rojo](capturas/psicologo-tdd1-rojo.png)
+
+---
+
+**Commit 2 — Verde** [`abbdd1b`](https://github.com/nicoleUg/psicologo/commit/abbdd1b58b8f9c250042a8ad6c761eb44cba601b):
+```
 feat: [HU-08] implementar isTimeConflict para pasar test
+```
+Código mínimo para hacer pasar el test:
 ```typescript
 export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
   const s1 = timeToMinutes(start1);
@@ -62,32 +82,45 @@ export function isTimeConflict(start1: string, end1: string, start2: string, end
   return false;
 }
 ```
-2.1.3 Refactorizacion 
-refactor al codigo para que sea mas  legible e entendible 
-![alt text](image-10.png)
-![alt text](image-11.png)
-commit 3 refactorizacion [ec07f48] https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870 
+
+> Captura del test pasando:
+
+![Test verde](capturas/psicologo-tdd1-verde.png)
+
+---
+
+**Commit 3 — Refactor** [`ec07f48`](https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870):
+```
 refactor: [HU-08] simplificar retorno booleano en isTimeConflict
+```
+Cambios aplicados:
 ```typescript
 export function isTimeConflict(start1: string, end1: string, start2: string, end2: string): boolean {
   return timeToMinutes(start1) < timeToMinutes(end2) && timeToMinutes(start2) < timeToMinutes(end1);
 }
-
 ```
-2.2 HU-11:Validacion de telefono movil 
-Como sistema requiero validar que los teléfonos ingresados tengan formato válido de celular para asegurar el contacto con el paciente.
 
-CA elegido: Dado un número de teléfono, el sistema debe retornar verdadero si tiene el prefijo +591 seguido de un 6 o 7 y la longitud correcta, rechazando formatos inválidos.
+> Captura del test aún pasando después del refactor:
 
-2.2.1 Prueba roja
-como se esperaba fallo
-![alt text](image-13.png)
-![alt text](image-14.png)
-![alt text](image-12.png)
-commit 1 Rojo [39dd26d] https://github.com/nicoleUg/psicologo/commit/39dd26d1b08c0f21828c7cc05d58eb6af0d75e94 
+![Test post-refactor](capturas/psicologo-tdd1-refactor.png)
+
+---
+
+### Ciclo TDD — Prueba 2
+
+**HU:** [HU-11] Validación de teléfono móvil
+
+> Como sistema requiero validar que los teléfonos ingresados tengan formato válido de celular para asegurar el contacto con el paciente.
+
+**CA elegido:** Dado un número de teléfono, el sistema debe retornar verdadero si tiene el prefijo +591 seguido de un 6 o 7 y la longitud correcta, rechazando formatos inválidos.
+
+**Commit 1 — Rojo** [`39dd26d`](https://github.com/nicoleUg/psicologo/commit/39dd26d1b08c0f21828c7cc05d58eb6af0d75e94):
+```
 test: [HU-11] agregar test para validacion de telefono de paciente
-```typescript
+```
+Test escrito (sin el código que lo pase aún):
 
+```typescript
 describe('isValidMobilePhone', () => {
   it('debe validar un número móvil correcto con prefijo +591', () => {
     expect(isValidMobilePhone("+591 71234567")).toBe(true);
@@ -100,11 +133,18 @@ describe('isValidMobilePhone', () => {
   });
 });
 ```
-2.2.2 prueba verde 
-![alt text](image-15.png)
-como se esperaba paso el test
-commit verde [1193b01] https://github.com/nicoleUg/psicologo/commit/1193b01da0d521b50969886467db3e89e365a5fa 
+
+> Captura del test fallando:
+
+![Test rojo](capturas/psicologo-tdd2-rojo.png)
+
+---
+
+**Commit 2 — Verde** [`1193b01`](https://github.com/nicoleUg/psicologo/commit/1193b01da0d521b50969886467db3e89e365a5fa):
+```
 feat: [HU-11] implementar isValidMobilePhone para pasar test
+```
+Código mínimo para hacer pasar el test:
 ```typescript
 export function isValidMobilePhone(phone: string): boolean {
   if (phone.includes("+591 7") || phone.includes("+591 6")) {
@@ -113,30 +153,46 @@ export function isValidMobilePhone(phone: string): boolean {
   return false;
 }
 ```
-2.2.3 Refactor 
-refactor al codigo para que sea mas  legible e entendible 
-![alt text](image-16.png)
-commit refactor [faa23f9] https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329 
-refactor: [HU-11] usar regex estricta en validacion de telefono
-```typescript
 
+> Captura del test pasando:
+
+![Test verde](capturas/psicologo-tdd2-verde.png)
+
+---
+
+**Commit 3 — Refactor** [`faa23f9`](https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329):
+```
+refactor: [HU-11] usar regex estricta en validacion de telefono
+```
+Cambios aplicados:
+```typescript
 export function isValidMobilePhone(phone: string): boolean {
   const normalized = phone.replace(/\s/g, '');
   const phoneRegex = /^\+591[67]\d{7}$/;
   return phoneRegex.test(normalized);
 }
 ```
-2.3 HU-12: Validación de Nombre Completo 
-Como recepcionista quiero que el sistema me obligue a ingresar al menos nombre y apellido para no tener registros incompletos.
 
-CA elegido: Dado un string de entrada, la función debe verificar que contenga al menos dos palabras separadas por espacio.
+> Captura del test aún pasando después del refactor:
 
-2.3.1 Prueba roja 
-fallo 
-commit rojo [8e8ce32] https://github.com/nicoleUg/psicologo/commit/8e8ce323d09203b414ad38d678abff04da135e93 
+![Test post-refactor](capturas/psicologo-tdd2-refactor.png)
+
+---
+
+### Ciclo TDD — Prueba 3
+
+**HU:** [HU-12] Validación de nombre completo
+
+> Como recepcionista quiero que el sistema me obligue a ingresar al menos nombre y apellido para no tener registros incompletos.
+
+**CA elegido:** Dado un string de entrada, la función debe verificar que contenga al menos dos palabras separadas por espacio.
+
+**Commit 1 — Rojo** [`8e8ce32`](https://github.com/nicoleUg/psicologo/commit/8e8ce323d09203b414ad38d678abff04da135e93):
+```
 test: [HU-12] agregar test para longitud minima del nombre del paciente
-![alt text](image-17.png)
-![alt text](image-18.png)
+```
+Test escrito (sin el código que lo pase aún):
+
 ```typescript
 describe('isValidFullName', () => {
   it('debe aceptar nombres con al menos dos palabras', () => {
@@ -148,10 +204,18 @@ describe('isValidFullName', () => {
   });
 });
 ```
-2.3.2 prueba verde 
-commit verde [4efcf92] https://github.com/nicoleUg/psicologo/commit/4efcf924b22a6455d7708d183d412f751c8657ac
+
+> Captura del test fallando:
+
+![Test rojo](capturas/psicologo-tdd3-rojo.png)
+
+---
+
+**Commit 2 — Verde** [`4efcf92`](https://github.com/nicoleUg/psicologo/commit/4efcf924b22a6455d7708d183d412f751c8657ac):
+```
 feat: [HU-12] implementar split para validar nombre completo
-![alt text](image-19.png)
+```
+Código mínimo para hacer pasar el test:
 ```typescript
 export function isValidFullName(name: string): boolean {
   const parts = name.split(' ');
@@ -162,10 +226,17 @@ export function isValidFullName(name: string): boolean {
 }
 ```
 
-2.3.3 refactor 
-![alt text](image-20.png)
-commit refactor [d21a590] https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d
+> Captura del test pasando:
+
+![Test verde](capturas/psicologo-tdd3-verde.png)
+
+---
+
+**Commit 3 — Refactor** [`d21a590`](https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d):
+```
 refactor: [HU-12] sanear espacios en blanco al validar nombre completo
+```
+Cambios aplicados:
 ```typescript
 export function isValidFullName(name: string): boolean {
   if (!name) return false;
@@ -173,21 +244,41 @@ export function isValidFullName(name: string): boolean {
   return words.length >= 2;
 }
 ```
-coverage final 
-![alt text](image-21.png)
-![alt text](image-22.png)
-La corbertura final se encuentra en un 87.8% donde directamente atacamos a la logica de negocios en la carpeta lib, ya que anteriormente hice pruebas de integracion por esa razon se llega a mostrar las otras carpetas 
 
-Seccion 3 --Code Smells corregidos 
-![alt text](image-23.png)
+> Captura del test aún pasando después del refactor:
+
+![Test post-refactor](capturas/psicologo-tdd3-refactor.png)
+
+---
+
+### Cobertura final
+
+**Cobertura alcanzada:** 87.8%
+
+> Captura del reporte de cobertura final:
+
+![Cobertura final](capturas/psicologo-cobertura-final.png)
+![Cobertura final 2](capturas/psicologo-cobertura-final2.png)
+
+> La cobertura final se encuentra en un 87.8% donde directamente atacamos a la lógica de negocios en la carpeta `lib`, ya que anteriormente hice pruebas de integración y por esa razón se llega a mostrar las otras carpetas.
+
+---
+
+## Sección 3 — Code smells corregidos
+
+![reporte Codesmells](capturas/psicologo-code-smells.png)
+
+Mínimo 3 nuevos (adicionales a los del EC2).
+
 | # | Tipo | Commit | Descripción |
 |---|---|---|---|
-| 1 | [Inseguridad de Tipos (Uso de any)] | [`8741bfe`](https://github.com/nicoleUg/psicologo/commit/8741bfee9711bac51f3e70c7af0a73be94f2e1eb) | [Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto.] |
-| 2 | [Magic Strings / Duplicación de literales] | [`8ded2df`](https://github.com/nicoleUg/psicologo/commit/8ded2df92f058850c3cbc92425cc3f2aeaf877e6) | [Antes: Cadenas de texto repetidas en aserciones de prueba. → Después: Extracción de strings a variables constantes.] |
-| 3 | [Dead Code (Imports sin usar)] | [`e8868a7`](https://github.com/nicoleUg/psicologo/commit/e8868a7c26f6a60da44dd5e6255f5e649de23733) | [Antes: Importación innecesaria que generaba advertencias del linter. → Después: Eliminación del código muerto.] |
+| 1 | Inseguridad de Tipos (Uso de any) | [`8741bfe`](https://github.com/nicoleUg/psicologo/commit/8741bfee9711bac51f3e70c7af0a73be94f2e1eb) | Antes: Componente recibía props como any perdiendo el tipado. → Después: Se creó una interfaz LoginFormProps para tipado estricto. |
+| 2 | Magic Strings / Duplicación de literales | [`8ded2df`](https://github.com/nicoleUg/psicologo/commit/8ded2df92f058850c3cbc92425cc3f2aeaf877e6) | Antes: Cadenas de texto repetidas en aserciones de prueba. → Después: Extracción de strings a variables constantes. |
+| 3 | Dead Code (Imports sin usar) | [`e8868a7`](https://github.com/nicoleUg/psicologo/commit/e8868a7c26f6a60da44dd5e6255f5e649de23733) | Antes: Importación de `timeToMinutes` no utilizada en `timeUtils.test.ts`. → Después: Eliminación del import no utilizado. |
 
-Detalle — Smell 1: Inseguridad de Tipos (Uso de any)
-Código antes (src/app/pages/Login.tsx):
+### Detalle — Smell 1: Inseguridad de Tipos (Uso de any)
+
+**Código antes (src/app/pages/Login.tsx):**
 ```typescript
 function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSubmit }: any) {
   return (
@@ -197,7 +288,8 @@ function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSu
   );
 }
 ```
-Código después (src/app/pages/Login.tsx):
+
+**Código después (src/app/pages/Login.tsx):**
 ```typescript
 interface LoginFormProps {
   email: string;
@@ -216,8 +308,12 @@ function LoginForm({ email, setEmail, password, setPassword, isLoading, handleSu
   );
 }
 ```
-Detalle — Smell 2: Magic Strings / Duplicación de literales
-Código antes (src/test/PatientsSearch.test.tsx):
+
+---
+
+### Detalle — Smell 2: Magic Strings / Duplicación de literales
+
+**Código antes (src/test/PatientsSearch.test.tsx):**
 ```typescript
 const mockPatients = [
   { id: '1', fullName: 'Maria Quispe Mamani', phone: '+591 7123 4567' },
@@ -236,8 +332,7 @@ describe('HU 9: Búsqueda avanzada de pacientes', () => {
 });
 ```
 
-Código después (src/test/PatientsSearch.test.tsx):
-
+**Código después (src/test/PatientsSearch.test.tsx):**
 ```typescript
 const PATIENT_MARIA = 'Maria Quispe Mamani';
 const PATIENT_JUAN = 'Juan Choque Flores';
@@ -258,10 +353,13 @@ describe('HU 9: Búsqueda avanzada de pacientes', () => {
   });
 });
 ```
-Detalle — Smell 3: Dead Code (Imports sin usar)
-Código antes (src/test/timeUtils.test.ts):
 
-```TypeScript
+---
+
+### Detalle — Smell 3: Dead Code (Imports sin usar)
+
+**Código antes (src/test/timeUtils.test.ts):**
+```typescript
 import { describe, it, expect } from 'vitest';
 import { isTimeConflict, timeToMinutes } from '../app/lib/timeUtils';
 
@@ -272,9 +370,9 @@ describe('isTimeConflict', () => {
   });
 });
 ```
-Código después (src/test/timeUtils.test.ts):
 
-```TypeScript
+**Código después (src/test/timeUtils.test.ts):**
+```typescript
 import { describe, it, expect } from 'vitest';
 import { isTimeConflict } from '../app/lib/timeUtils';
 
@@ -284,79 +382,87 @@ describe('isTimeConflict', () => {
     expect(hasConflict).toBe(true);
   });
 });
-Código después (src/test/timeUtils.test.ts):
-
 ```
-reporte final con codesmells arreglados
-![alt text](image-24.png)
-Sección 4 — Trazabilidad HU → CA → test
+
+![reporte Codesmells final](capturas/psicologo-code-smells2.png)
+
+---
+
+## Sección 4 — Trazabilidad HU → CA → test
+
 | # | Historia de Usuario | Criterio de Aceptación | Prueba que valida ese CA | Commit |
 |---|---|---|---|---|
-| 1 | [[HU-08] Validación de cruce de horarios]  | [Dado un horario guardado / Cuando agendo una cita que se superpone / Entonces retorna conflicto] | [isTimeConflict_HorariosSuperpuestos_RetornaTrue] | [`ec07f48`](https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870) |
-| 2 | [HU-11] Validación de teléfono móvil | [Dado un formulario / Cuando ingreso un teléfono sin formato boliviano / Entonces el sistema lo rechaza] | [isValidMobilePhone_FormatoInvalido_RetornaFalse] | [`faa23f9`](https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329) |
-| 3 | [HU-12] Validación de nombre completo | [Dado el campo nombre / Cuando introduzco una sola palabra / Entonces la validación falla] | [isValidFullName_UnaSolaPalabra_RetornaFalse] | [`d21a590`](https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d) |
+| 1 | [HU-08] Validación de cruce de horarios | Dado un horario guardado / Cuando agendo una cita que se superpone / Entonces retorna conflicto | isTimeConflict_HorariosSuperpuestos_RetornaTrue | [`ec07f48`](https://github.com/nicoleUg/psicologo/commit/ec07f48b55423d4b83f4388491a1e2630cd23870) |
+| 2 | [HU-11] Validación de teléfono móvil | Dado un formulario / Cuando ingreso un teléfono sin formato boliviano / Entonces el sistema lo rechaza | isValidMobilePhone_FormatoInvalido_RetornaFalse | [`faa23f9`](https://github.com/nicoleUg/psicologo/commit/faa23f9033528db97d1b675aab3ddfcc8c4ae329) |
+| 3 | [HU-12] Validación de nombre completo | Dado el campo nombre / Cuando introduzco una sola palabra / Entonces la validación falla | isValidFullName_UnaSolaPalabra_RetornaFalse | [`d21a590`](https://github.com/nicoleUg/psicologo/commit/d21a5900c00a57b342744b32bc51fccaa17c2b2d) |
 
-Cadena 1 — [HU-08] Validación de cruce de horarios
-Historia de Usuario:
+### Cadena 1 — [HU-08] Validación de cruce de horarios
 
-Como [psicólogo] quiero que el [sistema detecte si dos citas se superponen] para [evitar programar pacientes en el mismo horario].
+**Historia de Usuario:**
+> Como psicólogo quiero que el sistema detecte si dos citas se superponen para evitar programar pacientes en el mismo horario.
 
-Criterio de Aceptación elegido:
+**Criterio de Aceptación elegido:**
+> Dado un horario previamente guardado en el sistema ("08:00"-"09:00") / Cuando intento agendar una nueva cita que inicia dentro de ese rango ("08:30"-"09:30") / Entonces el validador retorna "true" indicando que hay un conflicto.
 
-Dado un [horario previamente guardado en el sistema ("08:00"-"09:00")] / Cuando intento agendar una [nueva cita que inicia dentro de ese rango ("08:30"-"09:30")] / Entonces [el validador retorna "true" indicando que hay un conflicto].
-
-Prueba que valida este CA:
+**Prueba que valida este CA:**
 ```typescript
 describe('isTimeConflict', () => {
   it('debe detectar un cruce cuando los horarios se superponen', () => {
-    // cita 1: 08:00 a 09:00 y cita 2: 08:30 a 09:30 (Hay conflicto)
+    // Arrange & Act
     const hasConflict = isTimeConflict("08:00", "09:00", "08:30", "09:30");
+    
+    // Assert
     expect(hasConflict).toBe(true);
   });
 });
 ```
-Cadena 2 — [HU-11] Validación de teléfono móvil
-Historia de Usuario:
 
-Como [psicólogo] quiero que el [sistema valide el número de teléfono] para [evitar errores en el registro de pacientes].
+---
 
-Criterio de Aceptación elegido:
+### Cadena 2 — [HU-11] Validación de teléfono móvil
 
-Dado un [formulario de registro] / Cuando ingreso un [teléfono sin formato de bolivia (ej: "71234567") ] / Entonces [el validador falla y muestra un mensaje de error, impidiendo el envío de datos].
+**Historia de Usuario:**
+> Como psicólogo quiero que el sistema valide el número de teléfono para evitar errores en el registro de pacientes.
 
-Prueba que valida este CA:
+**Criterio de Aceptación elegido:**
+> Dado un formulario de registro / Cuando ingreso un teléfono sin formato de bolivia (ej: "71234567") / Entonces el validador falla y muestra un mensaje de error, impidiendo el envío de datos.
+
+**Prueba que valida este CA:**
 ```typescript
 describe('isValidMobilePhone', () => {
-  it('debe validar un número móvil correcto con prefijo +591', () => {
-    expect(isValidMobilePhone("+591 71234567")).toBe(true);
-    expect(isValidMobilePhone("+591 69876543")).toBe(true);
-  });
-
   it('debe rechazar números con formato inválido o longitud incorrecta', () => {
-    expect(isValidMobilePhone("12345")).toBe(false); 
-    expect(isValidMobilePhone("+591 21234567")).toBe(false); 
+    // Arrange & Act
+    const esValidoCorto = isValidMobilePhone("12345");
+    const esValidoSinPrefijo = isValidMobilePhone("+591 21234567");
+
+    // Assert
+    expect(esValidoCorto).toBe(false);
+    expect(esValidoSinPrefijo).toBe(false);
   });
 });
 ```
-Cadena 3 — [HU-12] Validación de nombre completo
-Historia de Usuario:
 
-Como [psicólogo] quiero [validar el nombre completo de los pacientes] para [no tener registros incompletos].
+---
 
-Criterio de Aceptación elegido:
+### Cadena 3 — [HU-12] Validación de nombre completo
 
-Dado el [campo de texto para el nombre del paciente] / Cuando introduzco [una sola palabra (ejemplo: "Ana")] / Entonces [Entonces la función de validación retorna falso].
+**Historia de Usuario:**
+> Como psicólogo quiero validar el nombre completo de los pacientes para no tener registros incompletos.
 
-Prueba que valida este CA:
+**Criterio de Aceptación elegido:**
+> Dado el campo de texto para el nombre del paciente / Cuando introduzco una sola palabra (ejemplo: "Ana") / Entonces la función de validación retorna falso.
+
+**Prueba que valida este CA:**
 ```typescript
 describe('isValidFullName', () => {
-  it('debe validar un nombre completo con al menos dos palabras', () => {
-    expect(isValidFullName("Maria Quispe Mamani")).toBe(true);
-  });
-
   it('debe rechazar nombres que consisten en una sola palabra', () => {
-    expect(isValidFullName("Ana")).toBe(false); 
-    expect(isValidFullName("Juan")).toBe(false); 
+    // Arrange & Act
+    const esValidoUnaPalabra1 = isValidFullName("Ana");
+    const esValidoUnaPalabra2 = isValidFullName("Juan");
+
+    // Assert
+    expect(esValidoUnaPalabra1).toBe(false);
+    expect(esValidoUnaPalabra2).toBe(false);
   });
 });
 ```
